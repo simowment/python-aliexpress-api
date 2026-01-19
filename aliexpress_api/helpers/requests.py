@@ -1,10 +1,24 @@
 from types import SimpleNamespace
 import json
+from typing import Type, TypeVar, Optional, Any
+from ..models.base import BaseModel
 
 from ..errors import ApiRequestException, ApiRequestResponseException
 
+T = TypeVar("T", bound=BaseModel)
 
-def api_request(request, response_name, session=None):
+def api_request(request, response_name: str, model_class: Optional[Type[T]] = None, session: Optional[str] = None) -> Any:
+    """Makes an API request and returns the parsed response.
+    
+    Args:
+        request: The API request object from SDK.
+        response_name: The name of the response key in the JSON.
+        model_class: The class to parse the result into. If None, returns SimpleNamespace.
+        session: Optional session token.
+        
+    Returns:
+        The parsed response, either as a model_class instance or a SimpleNamespace.
+    """
     try:
         response = request.getResponse(authrize=session)
     except Exception as error:
@@ -39,13 +53,17 @@ def api_request(request, response_name, session=None):
                 # If it's a success but has no result/resp_result/data, return the inner response
                  result_obj = inner_response
 
-        # Deeply convert result_obj to SimpleNamespace
+        # Some APIs return result and then another result inside, we flatten if possible
+        if isinstance(result_obj, dict) and 'result' in result_obj:
+            result_obj = result_obj['result']
+
+        if model_class and issubclass(model_class, BaseModel):
+            return model_class.from_dict(result_obj)
+
+        # Deeply convert result_obj to SimpleNamespace (legacy)
         result_json = json.dumps(result_obj)
         processed_response = json.loads(result_json, object_hook=lambda d: SimpleNamespace(**d))
         
-        # Some APIs return result and then another result inside, we flatten if possible
-        if hasattr(processed_response, 'result'):
-            return processed_response.result
         return processed_response
 
     except Exception as error:

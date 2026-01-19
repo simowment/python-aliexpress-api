@@ -1,6 +1,6 @@
 from typing import List, Union
 from .. import models
-from ..skd import api as aliapi
+from ..sdk import api as aliapi
 from ..helpers import api_request, parse_products, get_list_as_string
 from ..errors import ProductsNotFoundException, InvalidTrackingIdException, OrdersNotFoundException
 
@@ -31,18 +31,20 @@ class AffiliateMixin:
 
         links = get_list_as_string(links)
 
-        request = aliapi.rest.AliexpressAffiliateLinkGenerateRequest()
-        request.app_signature = self._app_signature
-        request.source_values = links
-        request.promotion_link_type = link_type
-        request.tracking_id = self._tracking_id
+        request = self._prepare_request(
+            aliapi.rest.AliexpressAffiliateLinkGenerateRequest(),
+            source_values=links,
+            promotion_link_type=link_type,
+            tracking_id=self._tracking_id
+        )
 
-        response = api_request(request, 'aliexpress_affiliate_link_generate_response')
+        response = api_request(request, 'aliexpress_affiliate_link_generate_response', models.AffiliateLink)
 
-        if response.total_result_count > 0:
-            return response.promotion_links.promotion_link
-        else:
-            raise ProductsNotFoundException('Affiliate links not available')
+        # generate-link returns a list of links
+        if response and hasattr(response, 'promotion_links'):
+             return response.promotion_links
+        
+        return response
 
 
     def get_hotproducts(self,
@@ -84,27 +86,27 @@ class AffiliateMixin:
             ``ApiRequestException``
             ``ApiRequestResponseException``
         """
-        request = aliapi.rest.AliexpressAffiliateHotproductQueryRequest()
-        request.app_signature = self._app_signature
-        request.category_ids = get_list_as_string(category_ids)
-        request.delivery_days = str(delivery_days)
-        request.fields = get_list_as_string(fields)
-        request.keywords = keywords
-        request.max_sale_price = max_sale_price
-        request.min_sale_price = min_sale_price
-        request.page_no = page_no
-        request.page_size = page_size
-        request.platform_product_type = platform_product_type
-        request.ship_to_country = ship_to_country
-        request.sort = sort
-        request.target_currency = self._currency
-        request.target_language = self._language
-        request.tracking_id = self._tracking_id
+        request = self._prepare_request(
+            aliapi.rest.AliexpressAffiliateHotproductQueryRequest(),
+            category_ids=get_list_as_string(category_ids),
+            delivery_days=str(delivery_days) if delivery_days else None,
+            fields=get_list_as_string(fields),
+            keywords=keywords,
+            max_sale_price=max_sale_price,
+            min_sale_price=min_sale_price,
+            page_no=page_no,
+            page_size=page_size,
+            platform_product_type=platform_product_type,
+            ship_to_country=ship_to_country,
+            sort=sort,
+            target_currency=self._currency,
+            target_language=str(self._language).lower(),
+            tracking_id=self._tracking_id
+        )
 
-        response = api_request(request, 'aliexpress_affiliate_hotproduct_query_response')
+        response = api_request(request, 'aliexpress_affiliate_hotproduct_query_response', models.HotProductsResponse)
 
-        if response.current_record_count > 0:
-            response.products = parse_products(response.products.product)
+        if response and response.current_record_count > 0:
             return response
         else:
             raise ProductsNotFoundException('No products found with current parameters')
@@ -149,27 +151,27 @@ class AffiliateMixin:
             ``ApiRequestException``
             ``ApiRequestResponseException``
         """
-        request = aliapi.rest.AliexpressAffiliateProductQueryRequest()
-        request.app_signature = self._app_signature
-        request.category_ids = get_list_as_string(category_ids)
-        request.delivery_days = str(delivery_days)
-        request.fields = get_list_as_string(fields)
-        request.keywords = keywords
-        request.max_sale_price = max_sale_price
-        request.min_sale_price = min_sale_price
-        request.page_no = page_no
-        request.page_size = page_size
-        request.platform_product_type = platform_product_type
-        request.ship_to_country = ship_to_country
-        request.sort = sort
-        request.target_currency = self._currency
-        request.target_language = self._language
-        request.tracking_id = self._tracking_id
+        request = self._prepare_request(
+            aliapi.rest.AliexpressAffiliateProductQueryRequest(),
+            category_ids=get_list_as_string(category_ids),
+            delivery_days=str(delivery_days) if delivery_days else None,
+            fields=get_list_as_string(fields),
+            keywords=keywords,
+            max_sale_price=max_sale_price,
+            min_sale_price=min_sale_price,
+            page_no=page_no,
+            page_size=page_size,
+            platform_product_type=platform_product_type,
+            ship_to_country=ship_to_country,
+            sort=sort,
+            target_currency=self._currency,
+            target_language=str(self._language).lower(),
+            tracking_id=self._tracking_id
+        )
 
-        response = api_request(request, 'aliexpress_affiliate_product_query_response')
+        response = api_request(request, 'aliexpress_affiliate_product_query_response', models.ProductsResponse)
 
-        if response.current_record_count > 0:
-            response.products = parse_products(response.products.product)
+        if response and response.current_record_count > 0:
             return response
         else:
             raise ProductsNotFoundException('No products found with current parameters')
@@ -215,26 +217,26 @@ class AffiliateMixin:
             ``ApiRequestException``
             ``ApiRequestResponseException``
         """
-        request = aliapi.rest.AliexpressAffiliateProductSmartmatchRequest()
-        request.app = app,
-        request.app_signature = self._app_signature
-        request.country = country
-        request.device = device
-        request.device_id = device_id
-        request.fields = get_list_as_string(fields)
-        request.keywords = keywords
-        request.page_no = page_no
-        request.product_id = product_id
-        request.site = site
-        request.target_currency = target_currency
-        request.target_language = target_language
-        request.tracking_id = tracking_id
-        request.user = user
+        request = self._prepare_request(
+            aliapi.rest.AliexpressAffiliateProductSmartmatchRequest(),
+            app=app,
+            country=country,
+            device=device,
+            device_id=device_id,
+            fields=get_list_as_string(fields),
+            keywords=keywords,
+            page_no=page_no,
+            product_id=product_id,
+            site=site,
+            target_currency=target_currency or self._currency,
+            target_language=target_language or str(self._language).lower(),
+            tracking_id=tracking_id or self._tracking_id,
+            user=user
+        )
 
-        response = api_request(request, 'aliexpress_affiliate_product_smartmatch_response')
+        response = api_request(request, 'aliexpress_affiliate_product_smartmatch_response', models.HotProductsResponse)
 
-        if hasattr(response, 'products') and response.products:
-            response.products = parse_products(response.products.product)
+        if response and response.current_record_count > 0:
             return response
         else:
             raise ProductsNotFoundException('No products found with current parameters')
@@ -267,19 +269,20 @@ class AffiliateMixin:
             ProductsNotFoundException: If no orders are found for the specified parameters.
             ApiRequestException: If the API request fails.
         """
-        request = aliapi.rest.AliexpressAffiliateOrderListRequest()
-        request.app_signature = self._app_signature
-        request.start_time = start_time
-        request.end_time = end_time
-        request.fields = ','.join(fields) if isinstance(fields, list) else fields
-        request.locale_site = locale_site
-        request.page_no = page_no
-        request.page_size = page_size
-        request.status = status
+        request = self._prepare_request(
+            aliapi.rest.AliexpressAffiliateOrderListRequest(),
+            start_time=start_time,
+            end_time=end_time,
+            fields=get_list_as_string(fields),
+            locale_site=locale_site,
+            page_no=page_no,
+            page_size=page_size,
+            status=status
+        )
 
-        response = api_request(request, 'aliexpress_affiliate_order_list_response')
+        response = api_request(request, 'aliexpress_affiliate_order_list_response', models.OrderListResponse)
 
-        if response.current_record_count > 0:
+        if response and response.current_record_count > 0:
             return response
         else:
             raise OrdersNotFoundException("No orders found for the specified parameters")

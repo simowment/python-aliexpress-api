@@ -1,6 +1,6 @@
 from typing import List, Union
 from .. import models
-from ..skd import api as aliapi
+from ..sdk import api as aliapi
 from ..helpers import api_request, parse_products, get_list_as_string, get_product_ids
 from ..errors import ProductsNotFoundException, CategoriesNotFoundException
 from ..helpers.categories import filter_child_categories, filter_parent_categories
@@ -32,19 +32,19 @@ class CommonMixin:
         product_ids = get_product_ids(product_ids)
         product_ids = get_list_as_string(product_ids)
 
-        request = aliapi.rest.AliexpressAffiliateProductdetailGetRequest()
-        request.app_signature = self._app_signature
-        request.fields = get_list_as_string(fields)
-        request.product_ids = product_ids
-        request.country = country
-        request.target_currency = self._currency
-        request.target_language = self._language
-        request.tracking_id = self._tracking_id
+        request = self._prepare_request(
+            aliapi.rest.AliexpressAffiliateProductdetailGetRequest(),
+            fields=get_list_as_string(fields),
+            product_ids=product_ids,
+            country=country,
+            target_currency=self._currency,
+            target_language=str(self._language).lower(),
+            tracking_id=self._tracking_id
+        )
 
-        response = api_request(request, 'aliexpress_affiliate_productdetail_get_response')
+        response = api_request(request, 'aliexpress_affiliate_productdetail_get_response', models.Product)
 
-        if response.current_record_count > 0:
-            response = parse_products(response.products.product)
+        if response:
             return response
         else:
             raise ProductsNotFoundException('No products found with current parameters')
@@ -61,13 +61,14 @@ class CommonMixin:
             ``ApiRequestException``
             ``ApiRequestResponseException``
         """
-        request = aliapi.rest.AliexpressAffiliateCategoryGetRequest()
-        request.app_signature = self._app_signature
+        request = self._prepare_request(
+            aliapi.rest.AliexpressAffiliateCategoryGetRequest()
+        )
 
-        response = api_request(request, 'aliexpress_affiliate_category_get_response')
+        response = api_request(request, 'aliexpress_affiliate_category_get_response', models.Category)
 
-        if response.total_result_count > 0:
-            self.categories = response.categories.category
+        if response:
+            self.categories = response
             return self.categories
         else:
             raise CategoriesNotFoundException('No categories found')
@@ -132,13 +133,16 @@ class CommonMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressLogisticsBuyerFreightCalculateRequest()
-        request.app_signature = self._app_signature
-        request.country_code = country_code
-        request.locale = locale
-        request.product_list = str(product_list)
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressLogisticsBuyerFreightCalculateRequest(),
+            country_code=country_code,
+            locale=locale,
+            product_list=str(product_list),
+            web_site=web_site
+        )
 
         response = api_request(request, 'aliexpress_logistics_buyer_freight_calculate_response')
+
+        return response
 
         return response

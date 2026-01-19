@@ -5,7 +5,7 @@ to get product information and affiliate links from AliExpress using the officia
 API in an easier way.
 """
 
-from .skd import setDefaultAppInfo
+from .sdk import setDefaultAppInfo
 from . import models
 from .mixins.affiliate import AffiliateMixin
 from .mixins.dropshipping import DropshippingMixin
@@ -40,3 +40,19 @@ class AliexpressApi(CommonMixin, AffiliateMixin, DropshippingMixin):
         self._token = token
         self.categories = None
         setDefaultAppInfo(self._key, self._secret)
+
+    def _prepare_request(self, request, **params):
+        """Prepares common request parameters.
+        
+        Args:
+            request: The API request object.
+            **params: Additional parameters to set on the request.
+        """
+        request.app_signature = self._app_signature
+        
+        # Set common parameters on the request object if it has them
+        for key, value in params.items():
+            if hasattr(request, key):
+                setattr(request, key, value)
+        
+        return request

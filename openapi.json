@@ -1,0 +1,2843 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AliExpress SDK API",
+    "version": "1.0.0",
+    "description": "Auto-generated OpenAPI spec from the python-aliexpress-api SDK."
+  },
+  "servers": [
+    {
+      "url": "https://gw.api.alibaba.com/openapi/rest1",
+      "description": "AliExpress Global API"
+    }
+  ],
+  "paths": {
+    "/add_dropshipper": {
+      "post": {
+        "operationId": "add_dropshipper",
+        "summary": "Add a new dropshipper.",
+        "parameters": [
+          {
+            "name": "email",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "mobile",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "app_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "platform",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/calculate_buyer_freight": {
+      "post": {
+        "operationId": "calculate_buyer_freight",
+        "summary": "Freight calculation interface provided for buyers.",
+        "parameters": [
+          {
+            "name": "country_code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_list",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/create_ds_order": {
+      "post": {
+        "operationId": "create_ds_order",
+        "summary": "Create and pay for a dropshipping order.",
+        "parameters": [
+          {
+            "name": "logistics_address",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_items",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "out_order_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ds_extend_params",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/ds_image_search": {
+      "post": {
+        "operationId": "ds_image_search",
+        "summary": "Search for products using an image.",
+        "parameters": [
+          {
+            "name": "image_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/get_affiliate_links": {
+      "post": {
+        "operationId": "get_affiliate_links",
+        "summary": "Converts a list of links in affiliate links.",
+        "parameters": [
+          {
+            "name": "links",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "link_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AffiliateLink"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_categories": {
+      "post": {
+        "operationId": "get_categories",
+        "summary": "Get all available categories, both parent and child.",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "$ref": "#/components/schemas/Category"
+                      },
+                      {
+                        "$ref": "#/components/schemas/ChildCategory"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_child_categories": {
+      "post": {
+        "operationId": "get_child_categories",
+        "summary": "Get all available child categories for a specific parent category.",
+        "parameters": [
+          {
+            "name": "parent_category_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "use_cache",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChildCategory"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_ds_categories": {
+      "post": {
+        "operationId": "get_ds_categories",
+        "summary": "Get dropshipping categories.",
+        "parameters": [
+          {
+            "name": "category_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DsCategoryGetResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_ds_commission_orders": {
+      "post": {
+        "operationId": "get_ds_commission_orders",
+        "summary": "Get list of dropshipping commission orders.",
+        "parameters": [
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DsCommissionOrderListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_ds_feed_items": {
+      "post": {
+        "operationId": "get_ds_feed_items",
+        "summary": "Fetch items with feed name in simple model.",
+        "parameters": [
+          {
+            "name": "feed_name",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/get_ds_member_benefit": {
+      "post": {
+        "operationId": "get_ds_member_benefit",
+        "summary": "Get dropshipper member benefits.",
+        "parameters": [
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/get_ds_order_tracking": {
+      "post": {
+        "operationId": "get_ds_order_tracking",
+        "summary": "Get DropShip Order Tracking info.",
+        "parameters": [
+          {
+            "name": "ae_order_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/get_ds_orders": {
+      "post": {
+        "operationId": "get_ds_orders",
+        "summary": "Get list of dropshipping orders.",
+        "parameters": [
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DsOrderListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_ds_product": {
+      "post": {
+        "operationId": "get_ds_product",
+        "summary": "Get detailed information about a dropshipping product.",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ship_to_country",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "target_currency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "target_language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "remove_personal_benefit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            }
+          },
+          {
+            "name": "biz_model",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "province_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DsProductGetResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_ds_product_special_info": {
+      "post": {
+        "operationId": "get_ds_product_special_info",
+        "summary": "Get special product information like certification.",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/get_ds_recommend_feed": {
+      "post": {
+        "operationId": "get_ds_recommend_feed",
+        "summary": "Get recommended feed products for dropshipping.",
+        "parameters": [
+          {
+            "name": "feed_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/get_ds_trade_order": {
+      "post": {
+        "operationId": "get_ds_trade_order",
+        "summary": "Get detailed information about a dropshipping trade order.",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DsTradeOrderGetResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_ds_wholesale_product": {
+      "post": {
+        "operationId": "get_ds_wholesale_product",
+        "summary": "Get product info for wholesale business.",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/get_hotproducts": {
+      "post": {
+        "operationId": "get_hotproducts",
+        "summary": "Search for affiliated products with high commission.",
+        "parameters": [
+          {
+            "name": "category_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "delivery_days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "max_sale_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "min_sale_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "platform_product_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ship_to_country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HotProductsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_order_list": {
+      "post": {
+        "operationId": "get_order_list",
+        "summary": "Retrieve a list of affiliate orders from AliExpress.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "start_time",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "end_time",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderListResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_parent_categories": {
+      "post": {
+        "operationId": "get_parent_categories",
+        "summary": "Get all available parent categories.",
+        "parameters": [
+          {
+            "name": "use_cache",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_products": {
+      "post": {
+        "operationId": "get_products",
+        "summary": "Search for affiliated products.",
+        "parameters": [
+          {
+            "name": "category_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "delivery_days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "max_sale_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "min_sale_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "platform_product_type",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "ship_to_country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_products_details": {
+      "post": {
+        "operationId": "get_products_details",
+        "summary": "Get products information.",
+        "parameters": [
+          {
+            "name": "product_ids",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_trade_ds_order": {
+      "post": {
+        "operationId": "get_trade_ds_order",
+        "summary": "Buyer query order details.",
+        "parameters": [
+          {
+            "name": "order_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/query_ds_freight": {
+      "post": {
+        "operationId": "query_ds_freight",
+        "summary": "Query freight/shipping costs for products.",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sku_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country_code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "quantity",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "currency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "province_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "city_code",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/report_ds_search_event": {
+      "post": {
+        "operationId": "report_ds_search_event",
+        "summary": "Report search events for analytics.",
+        "parameters": [
+          {
+            "name": "event_list",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "web_site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/smart_match_product": {
+      "post": {
+        "operationId": "smart_match_product",
+        "summary": "Get affiliated products using smart match based on keyword and device information.",
+        "parameters": [
+          {
+            "name": "device_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "app",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "device",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "site",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "target_currency",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "target_language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "tracking_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "user",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HotProductsResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/text_search_ds": {
+      "post": {
+        "operationId": "text_search_ds",
+        "summary": "Text search for dropshipping products.",
+        "parameters": [
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "country",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "category_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "locale",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_no",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "min_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "max_price",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DsTextSearchResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AffiliateLink": {
+        "type": "object",
+        "properties": {
+          "promotion_link": {
+            "type": "string"
+          },
+          "source_value": {
+            "type": "string"
+          }
+        },
+        "description": "AffiliateLink(promotion_link: str = '', source_value: str = '')"
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "integer"
+          },
+          "category_name": {
+            "type": "string"
+          }
+        },
+        "description": "Category(category_id: int = 0, category_name: str = '')"
+      },
+      "ChildCategory": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "integer"
+          },
+          "category_name": {
+            "type": "string"
+          },
+          "parent_category_id": {
+            "type": "integer"
+          }
+        },
+        "description": "ChildCategory(category_id: int = 0, category_name: str = '', parent_category_id: int = 0)"
+      },
+      "DsCategory": {
+        "type": "object",
+        "properties": {
+          "category_id": {
+            "type": "integer"
+          },
+          "category_name": {
+            "type": "string"
+          },
+          "parent_category_id": {
+            "type": "integer"
+          },
+          "children": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsCategory"
+            }
+          }
+        },
+        "description": "Model for dropshipping category information."
+      },
+      "DsCategoryGetResponse": {
+        "type": "object",
+        "properties": {
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsCategory"
+            }
+          }
+        },
+        "description": "Response for getting dropshipping categories."
+      },
+      "DsCommissionOrder": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          },
+          "commission_status": {
+            "type": "string"
+          },
+          "commission_rate": {
+            "type": "string"
+          },
+          "commission_amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "order_time": {
+            "type": "string"
+          },
+          "affiliate_order_id": {
+            "type": "string"
+          }
+        },
+        "description": "Model for dropshipping commission order information."
+      },
+      "DsCommissionOrderListResponse": {
+        "type": "object",
+        "properties": {
+          "total_record_count": {
+            "type": "integer"
+          },
+          "current_record_count": {
+            "type": "integer"
+          },
+          "commission_orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsCommissionOrder"
+            }
+          }
+        },
+        "description": "Response for listing dropshipping commission orders."
+      },
+      "DsOrderProduct": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "product_name": {
+            "type": "string"
+          },
+          "sku_id": {
+            "type": "string"
+          },
+          "sku_info": {
+            "type": "string"
+          },
+          "product_count": {
+            "type": "integer"
+          },
+          "product_price": {
+            "type": "string"
+          },
+          "product_image_url": {
+            "type": "string"
+          }
+        },
+        "description": "Product information within a dropshipping order."
+      },
+      "DsOrder": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          },
+          "order_status": {
+            "type": "string"
+          },
+          "gmt_create": {
+            "type": "string"
+          },
+          "gmt_modified": {
+            "type": "string"
+          },
+          "total_amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "product_count": {
+            "type": "integer"
+          },
+          "order_products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsOrderProduct"
+            }
+          }
+        },
+        "description": "Model for dropshipping order information."
+      },
+      "DsOrderListResponse": {
+        "type": "object",
+        "properties": {
+          "total_record_count": {
+            "type": "integer"
+          },
+          "current_record_count": {
+            "type": "integer"
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsOrder"
+            }
+          }
+        },
+        "description": "Response for listing dropshipping orders."
+      },
+      "AeItemBaseInfoDto": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "detail": {
+            "type": "string"
+          },
+          "mobile_detail": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "string"
+          },
+          "category_id": {
+            "type": "string"
+          },
+          "product_status_type": {
+            "type": "string"
+          },
+          "currency_code": {
+            "type": "string"
+          },
+          "avg_evaluation_rating": {
+            "type": "string"
+          },
+          "evaluation_count": {
+            "type": "string"
+          },
+          "sales_count": {
+            "type": "string"
+          },
+          "gmt_create": {
+            "type": "string"
+          },
+          "gmt_modified": {
+            "type": "string"
+          },
+          "owner_member_seq_long": {
+            "type": "string"
+          },
+          "category_sequence": {
+            "type": "string"
+          },
+          "separated_listing": {
+            "type": "string"
+          }
+        },
+        "description": "Basic information about an AliExpress item."
+      },
+      "AeVideoDto": {
+        "type": "object",
+        "properties": {
+          "media_id": {
+            "type": "string"
+          },
+          "media_type": {
+            "type": "string"
+          },
+          "media_status": {
+            "type": "string"
+          },
+          "media_url": {
+            "type": "string"
+          },
+          "poster_url": {
+            "type": "string"
+          },
+          "ali_member_id": {
+            "type": "string"
+          }
+        },
+        "description": "Video information for a product."
+      },
+      "AeMultimediaInfoDto": {
+        "type": "object",
+        "properties": {
+          "image_urls": {
+            "type": "string"
+          },
+          "ae_video_dtos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AeVideoDto"
+            }
+          }
+        },
+        "description": "Multimedia information for a product."
+      },
+      "AeSkuPropertyDto": {
+        "type": "object",
+        "properties": {
+          "sku_property_id": {
+            "type": "string"
+          },
+          "sku_property_name": {
+            "type": "string"
+          },
+          "property_value_id": {
+            "type": "string"
+          },
+          "property_value_definition_name": {
+            "type": "string"
+          },
+          "sku_property_value": {
+            "type": "string"
+          },
+          "sku_image": {
+            "type": "string"
+          }
+        },
+        "description": "SKU property information."
+      },
+      "WholesalePriceTier": {
+        "type": "object",
+        "properties": {
+          "min_quantity": {
+            "type": "string"
+          },
+          "wholesale_price": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "string"
+          }
+        },
+        "description": "Wholesale price tier information."
+      },
+      "AeItemSkuInfoDto": {
+        "type": "object",
+        "properties": {
+          "sku_id": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "sku_price": {
+            "type": "string"
+          },
+          "offer_sale_price": {
+            "type": "string"
+          },
+          "offer_bulk_sale_price": {
+            "type": "string"
+          },
+          "sku_available_stock": {
+            "type": "string"
+          },
+          "sku_bulk_order": {
+            "type": "string"
+          },
+          "currency_code": {
+            "type": "string"
+          },
+          "ean_code": {
+            "type": "string"
+          },
+          "barcode": {
+            "type": "string"
+          },
+          "price_include_tax": {
+            "type": "string"
+          },
+          "tax_amount": {
+            "type": "string"
+          },
+          "tax_currency_code": {
+            "type": "string"
+          },
+          "estimated_import_charges": {
+            "type": "string"
+          },
+          "limit_strategy": {
+            "type": "string"
+          },
+          "buy_amount_limit_set_by_promotion": {
+            "type": "string"
+          },
+          "sku_attr": {
+            "type": "string"
+          },
+          "ae_sku_property_dtos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AeSkuPropertyDto"
+            }
+          },
+          "wholesale_price_tiers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WholesalePriceTier"
+            }
+          }
+        },
+        "description": "SKU information for an item."
+      },
+      "PackageInfoDto": {
+        "type": "object",
+        "properties": {
+          "package_length": {
+            "type": "string"
+          },
+          "package_width": {
+            "type": "string"
+          },
+          "package_height": {
+            "type": "string"
+          },
+          "gross_weight": {
+            "type": "string"
+          },
+          "package_type": {
+            "type": "string"
+          },
+          "product_unit": {
+            "type": "string"
+          },
+          "base_unit": {
+            "type": "string"
+          }
+        },
+        "description": "Package information for a product."
+      },
+      "LogisticsInfoDto": {
+        "type": "object",
+        "properties": {
+          "delivery_time": {
+            "type": "string"
+          },
+          "ship_to_country": {
+            "type": "string"
+          }
+        },
+        "description": "Logistics information for a product."
+      },
+      "StoreInfo": {
+        "type": "object",
+        "properties": {
+          "store_id": {
+            "type": "string"
+          },
+          "store_name": {
+            "type": "string"
+          },
+          "store_country_code": {
+            "type": "string"
+          },
+          "communication_rating": {
+            "type": "string"
+          },
+          "shipping_speed_rating": {
+            "type": "string"
+          },
+          "item_as_described_rating": {
+            "type": "string"
+          }
+        },
+        "description": "Store information."
+      },
+      "ItemProperty": {
+        "type": "object",
+        "properties": {
+          "attr_name": {
+            "type": "string"
+          },
+          "attr_value": {
+            "type": "string"
+          },
+          "attr_name_id": {
+            "type": "string"
+          },
+          "attr_value_id": {
+            "type": "string"
+          },
+          "attr_value_unit": {
+            "type": "string"
+          },
+          "attr_value_start": {
+            "type": "string"
+          },
+          "attr_value_end": {
+            "type": "string"
+          }
+        },
+        "description": "Property information for an item."
+      },
+      "ManufacturerInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "address": {
+            "type": "string"
+          },
+          "phone": {
+            "type": "string"
+          },
+          "phone_prefix": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "country_name": {
+            "type": "string"
+          }
+        },
+        "description": "Manufacturer information."
+      },
+      "ProductIdConverterResult": {
+        "type": "object",
+        "properties": {
+          "main_product_id": {
+            "type": "string"
+          },
+          "sub_product_id": {
+            "type": "string"
+          }
+        },
+        "description": "Product ID conversion result."
+      },
+      "DsProductGetResult": {
+        "type": "object",
+        "properties": {
+          "ae_item_base_info_dto": {
+            "$ref": "#/components/schemas/AeItemBaseInfoDto"
+          },
+          "ae_multimedia_info_dto": {
+            "$ref": "#/components/schemas/AeMultimediaInfoDto"
+          },
+          "ae_item_sku_info_dtos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AeItemSkuInfoDto"
+            }
+          },
+          "package_info_dto": {
+            "$ref": "#/components/schemas/PackageInfoDto"
+          },
+          "logistics_info_dto": {
+            "$ref": "#/components/schemas/LogisticsInfoDto"
+          },
+          "ae_store_info": {
+            "$ref": "#/components/schemas/StoreInfo"
+          },
+          "ae_item_properties": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ItemProperty"
+            }
+          },
+          "manufacturer_info": {
+            "$ref": "#/components/schemas/ManufacturerInfo"
+          },
+          "product_id_converter_result": {
+            "$ref": "#/components/schemas/ProductIdConverterResult"
+          },
+          "has_whole_sale": {
+            "type": "string"
+          }
+        },
+        "description": "Detailed result for product info query."
+      },
+      "DsProductGetResponse": {
+        "type": "object",
+        "properties": {
+          "result": {
+            "$ref": "#/components/schemas/DsProductGetResult"
+          },
+          "code": {
+            "type": "string"
+          },
+          "rsp_code": {
+            "type": "string"
+          },
+          "rsp_msg": {
+            "type": "string"
+          },
+          "request_id": {
+            "type": "string"
+          }
+        },
+        "description": "Response for getting dropshipping product details."
+      },
+      "OrderLogisticsInfo": {
+        "type": "object",
+        "properties": {
+          "logistics_number": {
+            "type": "string"
+          },
+          "logistics_company_name": {
+            "type": "string"
+          },
+          "logistics_status": {
+            "type": "string"
+          }
+        },
+        "description": "Logistics information for an order."
+      },
+      "DsTradeOrderGetResponse": {
+        "type": "object",
+        "properties": {
+          "order_id": {
+            "type": "string"
+          },
+          "order_status": {
+            "type": "string"
+          },
+          "gmt_create": {
+            "type": "string"
+          },
+          "gmt_modified": {
+            "type": "string"
+          },
+          "total_amount": {
+            "type": "string"
+          },
+          "currency": {
+            "type": "string"
+          },
+          "product_count": {
+            "type": "integer"
+          },
+          "order_products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsOrderProduct"
+            }
+          },
+          "order_logistics_info": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderLogisticsInfo"
+            }
+          }
+        },
+        "description": "Response for getting dropshipping trade order details."
+      },
+      "Product": {
+        "type": "object",
+        "properties": {
+          "app_sale_price": {
+            "type": "string"
+          },
+          "app_sale_price_currency": {
+            "type": "string"
+          },
+          "commission_rate": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "string"
+          },
+          "evaluate_rate": {
+            "type": "string"
+          },
+          "first_level_category_id": {
+            "type": "integer"
+          },
+          "first_level_category_name": {
+            "type": "string"
+          },
+          "lastest_volume": {
+            "type": "integer"
+          },
+          "hot_product_commission_rate": {
+            "type": "string"
+          },
+          "original_price": {
+            "type": "string"
+          },
+          "original_price_currency": {
+            "type": "string"
+          },
+          "product_detail_url": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "integer"
+          },
+          "product_main_image_url": {
+            "type": "string"
+          },
+          "product_small_image_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "product_title": {
+            "type": "string"
+          },
+          "product_video_url": {
+            "type": "string"
+          },
+          "promotion_link": {
+            "type": "string"
+          },
+          "relevant_market_commission_rate": {
+            "type": "string"
+          },
+          "sale_price": {
+            "type": "string"
+          },
+          "sale_price_currency": {
+            "type": "string"
+          },
+          "second_level_category_id": {
+            "type": "integer"
+          },
+          "second_level_category_name": {
+            "type": "string"
+          },
+          "shop_id": {
+            "type": "integer"
+          },
+          "shop_url": {
+            "type": "string"
+          },
+          "target_app_sale_price": {
+            "type": "string"
+          },
+          "target_app_sale_price_currency": {
+            "type": "string"
+          },
+          "target_original_price": {
+            "type": "string"
+          },
+          "target_original_price_currency": {
+            "type": "string"
+          },
+          "target_sale_price": {
+            "type": "string"
+          },
+          "target_sale_price_currency": {
+            "type": "string"
+          }
+        },
+        "description": "Product(app_sale_price: str = '', app_sale_price_currency: str = '', commission_rate: str = '', discount: str = '', evaluate_rate: str = '', first_level_category_id: int = 0, first_level_category_name: str = '', lastest_volume: int = 0, hot_product_commission_rate: str = '', original_price: str = '', original_price_currency: str = '', product_detail_url: str = '', product_id: int = 0, product_main_image_url: str = '', product_small_image_urls: List[str] = <factory>, product_title: str = '', product_video_url: str = '', promotion_link: str = '', relevant_market_commission_rate: str = '', sale_price: str = '', sale_price_currency: str = '', second_level_category_id: int = 0, second_level_category_name: str = '', shop_id: int = 0, shop_url: str = '', target_app_sale_price: str = '', target_app_sale_price_currency: str = '', target_original_price: str = '', target_original_price_currency: str = '', target_sale_price: str = '', target_sale_price_currency: str = '')"
+      },
+      "HotProductsResponse": {
+        "type": "object",
+        "properties": {
+          "current_page_no": {
+            "type": "integer"
+          },
+          "current_record_count": {
+            "type": "integer"
+          },
+          "total_record_count": {
+            "type": "integer"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        },
+        "description": "HotProductsResponse(current_page_no: int = 0, current_record_count: int = 0, total_record_count: int = 0, products: List[aliexpress_api.models.product.Product] = <factory>)"
+      },
+      "Order": {
+        "type": "object",
+        "properties": {
+          "estimated_finished_commission": {
+            "type": "string"
+          },
+          "product_detail_url": {
+            "type": "string"
+          },
+          "estimated_paid_commission": {
+            "type": "string"
+          },
+          "product_count": {
+            "type": "integer"
+          },
+          "order_number": {
+            "type": "string"
+          },
+          "is_hot_product": {
+            "type": "string"
+          },
+          "parent_order_number": {
+            "type": "string"
+          },
+          "product_main_image_url": {
+            "type": "string"
+          },
+          "order_status": {
+            "type": "string"
+          },
+          "category_id": {
+            "type": "integer"
+          },
+          "settled_currency": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "integer"
+          },
+          "order_type": {
+            "type": "string"
+          },
+          "tracking_id": {
+            "type": "string"
+          },
+          "created_time": {
+            "type": "string"
+          },
+          "finished_time": {
+            "type": "string"
+          },
+          "completed_settlement_time": {
+            "type": "string"
+          },
+          "paid_time": {
+            "type": "string"
+          },
+          "is_new_buyer": {
+            "type": "string"
+          },
+          "sub_order_id": {
+            "type": "string"
+          },
+          "custom_parameters": {
+            "type": "string"
+          },
+          "ship_to_country": {
+            "type": "string"
+          },
+          "product_title": {
+            "type": "string"
+          },
+          "incentive_commission_rate": {
+            "type": "string"
+          },
+          "new_buyer_bonus_commission": {
+            "type": "string"
+          },
+          "estimated_incentive_paid_commission": {
+            "type": "string"
+          },
+          "is_affiliate_product": {
+            "type": "string"
+          },
+          "paid_amount": {
+            "type": "string"
+          },
+          "effect_detail_status": {
+            "type": "string"
+          },
+          "estimated_incentive_finished_commission": {
+            "type": "string"
+          },
+          "commission_rate": {
+            "type": "string"
+          },
+          "finished_amount": {
+            "type": "string"
+          },
+          "order_platform": {
+            "type": "string"
+          },
+          "order_id": {
+            "type": "string"
+          }
+        },
+        "description": "Order(estimated_finished_commission: str = '', product_detail_url: str = '', estimated_paid_commission: str = '', product_count: int = 0, order_number: str = '', is_hot_product: str = '', parent_order_number: str = '', product_main_image_url: str = '', order_status: str = '', category_id: int = 0, settled_currency: str = '', product_id: int = 0, order_type: str = '', tracking_id: str = '', created_time: str = '', finished_time: str = '', completed_settlement_time: str = '', paid_time: str = '', is_new_buyer: str = '', sub_order_id: str = '', custom_parameters: str = '', ship_to_country: str = '', product_title: str = '', incentive_commission_rate: str = '', new_buyer_bonus_commission: str = '', estimated_incentive_paid_commission: str = '', is_affiliate_product: str = '', paid_amount: str = '', effect_detail_status: str = '', estimated_incentive_finished_commission: str = '', commission_rate: str = '', finished_amount: str = '', order_platform: str = '', order_id: str = '')"
+      },
+      "OrderListResponse": {
+        "type": "object",
+        "properties": {
+          "total_record_count": {
+            "type": "integer"
+          },
+          "current_record_count": {
+            "type": "integer"
+          },
+          "total_page_no": {
+            "type": "integer"
+          },
+          "current_page_no": {
+            "type": "integer"
+          },
+          "orders": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Order"
+            }
+          }
+        },
+        "description": "OrderListResponse(total_record_count: int = 0, current_record_count: int = 0, total_page_no: int = 0, current_page_no: int = 0, orders: List[aliexpress_api.models.order.Order] = <factory>)"
+      },
+      "ProductsResponse": {
+        "type": "object",
+        "properties": {
+          "current_page_no": {
+            "type": "integer"
+          },
+          "current_record_count": {
+            "type": "integer"
+          },
+          "total_record_count": {
+            "type": "integer"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Product"
+            }
+          }
+        },
+        "description": "ProductsResponse(current_page_no: int = 0, current_record_count: int = 0, total_record_count: int = 0, products: List[aliexpress_api.models.product.Product] = <factory>)"
+      },
+      "DsSearchProduct": {
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "itemMainPic": {
+            "type": "string"
+          },
+          "itemUrl": {
+            "type": "string"
+          },
+          "salePrice": {
+            "type": "string"
+          },
+          "salePriceCurrency": {
+            "type": "string"
+          },
+          "originalPrice": {
+            "type": "string"
+          },
+          "originalPriceCurrency": {
+            "type": "string"
+          },
+          "discount": {
+            "type": "string"
+          },
+          "evaluateRate": {
+            "type": "string"
+          },
+          "orders": {
+            "type": "string"
+          },
+          "score": {
+            "type": "string"
+          },
+          "videoUrl": {
+            "type": "string"
+          }
+        },
+        "description": "Product information from search results."
+      },
+      "DsTextSearchResult": {
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "integer"
+          },
+          "pageIndex": {
+            "type": "integer"
+          },
+          "pageSize": {
+            "type": "integer"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DsSearchProduct"
+            }
+          }
+        },
+        "description": "Result data for dropshipping text search."
+      },
+      "DsTextSearchResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "$ref": "#/components/schemas/DsTextSearchResult"
+          },
+          "code": {
+            "type": "string"
+          },
+          "msg": {
+            "type": "string"
+          }
+        },
+        "description": "Response for dropshipping text search."
+      }
+    }
+  }
+}

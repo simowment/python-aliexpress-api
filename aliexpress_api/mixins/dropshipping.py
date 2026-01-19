@@ -1,6 +1,6 @@
 from typing import List, Union, Optional
 from .. import models
-from ..skd import api as aliapi
+from ..sdk import api as aliapi
 from ..helpers import api_request, get_list_as_string
 from ..errors import ProductsNotFoundException, OrdersNotFoundException
 import json
@@ -35,16 +35,17 @@ class DropshippingMixin:
         Returns:
             models.DsProductGetResponse: Detailed product information.
         """
-        request = aliapi.rest.AliexpressDsProductGetRequest()
-        request.app_signature = self._app_signature
-        request.ship_to_country = ship_to_country
-        request.product_id = product_id
-        request.target_currency = target_currency or self._currency
-        request.target_language = target_language or self._language.lower() if hasattr(self._language, 'lower') else str(self._language).lower()
-        request.remove_personal_benefit = remove_personal_benefit
-        request.biz_model = biz_model
-        request.province_code = province_code
-        request.city_code = city_code
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsProductGetRequest(),
+            product_id=product_id,
+            ship_to_country=ship_to_country,
+            target_currency=target_currency or self._currency,
+            target_language=target_language or str(self._language).lower(),
+            remove_personal_benefit=remove_personal_benefit,
+            biz_model=biz_model,
+            province_code=province_code,
+            city_code=city_code
+        )
 
         response = api_request(request, "aliexpress_ds_product_get_response", session=self._token)
 
@@ -71,24 +72,14 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsCategoryGetRequest()
-        request.app_signature = self._app_signature
-        request.category_id = category_id
-        # Use provided language or fallback to instance language.
-        request.language = language if language else self._language.replace("_", "") if "_" in str(self._language) else str(self._language).lower()
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsCategoryGetRequest(),
+            category_id=category_id,
+            language=language or str(self._language).lower()
+        )
 
         response = api_request(request, "aliexpress_ds_category_get_response", session=self._token)
         
-        # NOTE: The auto-generated response wrapper might map 'resp_result' from the JSON 
-        # to the response object properties. We rely on 'api_request' doing the right thing.
-        # However, the docs show a new structure 'resp_result' -> 'result' -> 'categories'.
-        # If 'api_request' simply returns the 'result', we are good.
-        # But commonly we check if 'total_result_count' > 0 or similar.
-        
-        return response
-
-        response = api_request(request, "aliexpress_ds_category_get_response")
-
         return response
 
     def add_dropshipper(
@@ -118,14 +109,15 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.DsDropshpperAddRequest()
-        request.app_signature = self._app_signature
-        request.app_name = app_name
-        request.country = country
-        request.email = email
-        request.locale = locale
-        request.mobile = mobile
-        request.platform = platform
+        request = self._prepare_request(
+            aliapi.rest.DsDropshpperAddRequest(),
+            app_name=app_name,
+            country=country,
+            email=email,
+            locale=locale,
+            mobile=mobile,
+            platform=platform
+        )
 
         response = api_request(request, "ds_dropshpper_add_response")
 
@@ -161,19 +153,20 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.DsOrderListRequest()
-        request.app_signature = self._app_signature
-        request.end_time = end_time
-        request.fields = get_list_as_string(fields)
-        request.locale = locale
-        request.page_no = page_no
-        request.page_size = page_size
-        request.start_time = start_time
-        request.status = status
+        request = self._prepare_request(
+            aliapi.rest.DsOrderListRequest(),
+            end_time=end_time,
+            fields=get_list_as_string(fields),
+            locale=locale,
+            page_no=page_no,
+            page_size=page_size,
+            start_time=start_time,
+            status=status
+        )
 
-        response = api_request(request, "ds_order_list_response")
+        response = api_request(request, "ds_order_list_response", models.DsOrderListResponse)
 
-        if response.current_record_count > 0:
+        if response and response.current_record_count > 0:
             return response
         else:
             raise OrdersNotFoundException(
@@ -203,13 +196,14 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsTradeOrderGetRequest()
-        request.app_signature = self._app_signature
-        request.fields = get_list_as_string(fields)
-        request.locale = locale
-        request.order_id = order_id
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsTradeOrderGetRequest(),
+            fields=get_list_as_string(fields),
+            locale=locale,
+            order_id=order_id
+        )
 
-        response = api_request(request, "aliexpress_ds_trade_order_get_response")
+        response = api_request(request, "aliexpress_ds_trade_order_get_response", models.DsTradeOrderGetResponse)
 
         return response
 
@@ -241,20 +235,21 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsCommissionorderListbyindexRequest()
-        request.app_signature = self._app_signature
-        request.end_time = end_time
-        request.fields = get_list_as_string(fields)
-        request.locale = locale
-        request.page_no = page_no
-        request.page_size = page_size
-        request.start_time = start_time
-
-        response = api_request(
-            request, "aliexpress_ds_commissionorder_listbyindex_response"
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsCommissionorderListbyindexRequest(),
+            end_time=end_time,
+            fields=get_list_as_string(fields),
+            locale=locale,
+            page_no=page_no,
+            page_size=page_size,
+            start_time=start_time
         )
 
-        if response.current_record_count > 0:
+        response = api_request(
+            request, "aliexpress_ds_commissionorder_listbyindex_response", models.DsCommissionOrderListResponse
+        )
+
+        if response and response.current_record_count > 0:
             return response
         else:
             raise OrdersNotFoundException(
@@ -287,15 +282,16 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsImageSearchRequest()
-        request.app_signature = self._app_signature
-        request.country = country
-        request.fields = get_list_as_string(fields)
-        request.image_id = image_id
-        request.locale = locale
-        request.target_currency = self._currency
-        request.target_language = self._language
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsImageSearchRequest(),
+            country=country,
+            fields=get_list_as_string(fields),
+            image_id=image_id,
+            locale=locale,
+            target_currency=self._currency,
+            target_language=str(self._language).lower(),
+            web_site=web_site
+        )
 
         response = api_request(request, "aliexpress_ds_image_search_response")
 
@@ -331,17 +327,18 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsRecommendFeedGetRequest()
-        request.app_signature = self._app_signature
-        request.country = country
-        request.fields = get_list_as_string(fields)
-        request.feed_name = feed_name
-        request.locale = locale
-        request.page_no = page_no
-        request.page_size = page_size
-        request.target_currency = self._currency
-        request.target_language = self._language
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsRecommendFeedGetRequest(),
+            country=country,
+            fields=get_list_as_string(fields),
+            feed_name=feed_name,
+            locale=locale,
+            page_no=page_no,
+            page_size=page_size,
+            target_currency=self._currency,
+            target_language=str(self._language).lower(),
+            web_site=web_site
+        )
 
         response = api_request(request, "aliexpress_ds_recommend_feed_get_response")
 
@@ -372,8 +369,9 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsOrderCreateRequest()
-        request.app_signature = self._app_signature
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsOrderCreateRequest()
+        )
         
         order_params = {
             "logistics_address": logistics_address,
@@ -427,25 +425,19 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsFreightQueryRequest()
-        request.app_signature = self._app_signature
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsFreightQueryRequest()
+        )
         
         query_req = {
             "productId": product_id,
             "selectedSkuId": sku_id,
             "shipToCountry": country_code,
             "quantity": quantity,
-            "locale": locale if locale else "en_US", # Default to en_US if not provided? Or keep None and rely on user? Docs say Required.
+            "locale": locale if locale else "en_US",
             "currency": currency if currency else self._currency,
-            "language": language if language else self._language.replace("_", "") if "_" in str(self._language) else str(self._language) 
+            "language": language if language else str(self._language).lower()
         }
-        # Note on language: self._language might be 'EN', API might expect 'en' or 'EN'. 
-        # API Doc says: language String Yes language. 
-        # Typically locale is "en_US", language is "en" or "EN".
-        
-        # Let's clean up language logic. self._language is likely "EN", "RU" etc from the enum.
-        # If the API expects "en", "ru" we might need conversion.
-        # Docs are sparse "language String Yes language".
         
         if province_code:
             query_req['provinceCode'] = province_code
@@ -478,10 +470,11 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsOrderTrackingGetRequest()
-        request.app_signature = self._app_signature
-        request.ae_order_id = ae_order_id
-        request.language = language if language else self._language.replace("_", "") if "_" in str(self._language) else str(self._language).lower()
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsOrderTrackingGetRequest(),
+            ae_order_id=ae_order_id,
+            language=language or str(self._language).lower()
+        )
 
         response = api_request(request, "aliexpress_ds_order_tracking_get_response")
 
@@ -512,13 +505,14 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsFeedItemidsGetRequest()
-        request.app_signature = self._app_signature
-        request.feed_name = feed_name
-        request.locale = locale
-        request.page_no = page_no
-        request.page_size = page_size
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsFeedItemidsGetRequest(),
+            feed_name=feed_name,
+            locale=locale,
+            page_no=page_no,
+            page_size=page_size,
+            web_site=web_site
+        )
 
         response = api_request(request, "aliexpress_ds_feed_itemids_get_response")
 
@@ -548,12 +542,13 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsProductSpecialinfoGetRequest()
-        request.app_signature = self._app_signature
-        request.fields = get_list_as_string(fields)
-        request.locale = locale
-        request.product_id = product_id
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsProductSpecialinfoGetRequest(),
+            fields=get_list_as_string(fields),
+            locale=locale,
+            product_id=product_id,
+            web_site=web_site
+        )
 
         response = api_request(
             request, "aliexpress_ds_product_specialinfo_get_response"
@@ -585,12 +580,13 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsProductWholesaleGetRequest()
-        request.app_signature = self._app_signature
-        request.fields = get_list_as_string(fields)
-        request.locale = locale
-        request.product_id = product_id
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsProductWholesaleGetRequest(),
+            fields=get_list_as_string(fields),
+            locale=locale,
+            product_id=product_id,
+            web_site=web_site
+        )
         response = api_request(request, "aliexpress_ds_product_wholesale_get_response")
 
         return response
@@ -627,20 +623,21 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsTextSearchRequest()
-        request.app_signature = self._app_signature
-        request.categoryId = get_list_as_string(category_ids)
-        request.countryCode = country
-        request.keyWord = keywords
-        request.local = locale or f"{self._language.lower()}_{country.upper()}" if hasattr(self._language, 'lower') else str(self._language).lower() + "_" + country.upper()
-        request.pageIndex = page_no
-        request.pageSize = page_size
-        request.sortBy = sort
-        request.currency = self._currency
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsTextSearchRequest(),
+            categoryId=get_list_as_string(category_ids),
+            countryCode=country,
+            keyWord=keywords,
+            local=locale or f"{str(self._language).lower()}_{country.upper()}",
+            pageIndex=page_no,
+            pageSize=page_size,
+            sortBy=sort,
+            currency=self._currency
+        )
 
-        response = api_request(request, "aliexpress_ds_text_search_response", session=self._token)
+        response = api_request(request, "aliexpress_ds_text_search_response", models.DsTextSearchResponse, session=self._token)
 
-        if hasattr(response, 'data') and response.data and hasattr(response.data, 'totalCount') and int(response.data.totalCount) > 0:
+        if response and response.data and response.data.totalCount > 0:
             return response
         else:
             raise ProductsNotFoundException("No products found with current parameters")
@@ -662,11 +659,12 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsSearchEventReportRequest()
-        request.app_signature = self._app_signature
-        request.event_list = str(event_list)
-        request.locale = locale
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsSearchEventReportRequest(),
+            event_list=str(event_list),
+            locale=locale,
+            web_site=web_site
+        )
 
         response = api_request(request, "aliexpress_ds_search_event_report_response")
 
@@ -686,10 +684,11 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressDsMemberBenefitGetRequest()
-        request.app_signature = self._app_signature
-        request.locale = locale
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressDsMemberBenefitGetRequest(),
+            locale=locale,
+            web_site=web_site
+        )
 
         response = api_request(request, "aliexpress_ds_member_benefit_get_response")
 
@@ -719,13 +718,14 @@ class DropshippingMixin:
             ApiRequestException: If the API request fails.
             ApiRequestResponseException: If the API response is invalid.
         """
-        request = aliapi.rest.AliexpressTradeDsOrderGetRequest()
-        request.app_signature = self._app_signature
-        request.fields = get_list_as_string(fields)
-        request.locale = locale
-        request.order_id = order_id
-        request.web_site = web_site
+        request = self._prepare_request(
+            aliapi.rest.AliexpressTradeDsOrderGetRequest(),
+            fields=get_list_as_string(fields),
+            locale=locale,
+            order_id=order_id,
+            web_site=web_site
+        )
 
-        response = api_request(request, "aliexpress_trade_ds_order_get_response")
+        response = api_request(request, "aliexpress_trade_ds_order_get_response", models.DsTradeOrderGetResponse)
 
         return response

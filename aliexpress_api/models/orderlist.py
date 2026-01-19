@@ -1,9 +1,12 @@
-from .order import Order
+from dataclasses import dataclass, field
 from typing import List
+from .order import Order
+from .base import BaseModel
 
-class OrderListResponse:
-    total_record_count: int
-    current_record_count: int
-    total_page_no: int
-    current_page_no: int
-    orders: List[Order]
+@dataclass
+class OrderListResponse(BaseModel):
+    total_record_count: int = 0
+    current_record_count: int = 0
+    total_page_no: int = 0
+    current_page_no: int = 0
+    orders: List[Order] = field(default_factory=list)
