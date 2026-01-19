@@ -28,11 +28,11 @@ class ApiRequestResponseException(AliexpressException):
     """Raised if the request response is not valid"""
     pass
 
-class ProductsNotFoudException(AliexpressException):
+class ProductsNotFoundException(AliexpressException):
     """Raised if no products are found"""
     pass
 
-class CategoriesNotFoudException(AliexpressException):
+class CategoriesNotFoundException(AliexpressException):
     """Raised if no categories are found"""
     pass
 

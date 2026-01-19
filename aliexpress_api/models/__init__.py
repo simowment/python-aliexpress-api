@@ -17,4 +17,5 @@ from .dropshipping import (
     DsOrderListResponse,
     DsCommissionOrderListResponse,
     DsTradeOrderGetResponse,
+    DsTextSearchResponse,
 )

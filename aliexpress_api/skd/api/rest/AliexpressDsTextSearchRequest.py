@@ -8,16 +8,15 @@ class AliexpressDsTextSearchRequest(RestApi):
     def __init__(self, domain="api-sg.aliexpress.com", port=80):
         RestApi.__init__(self, domain, port)
         self.app_signature = None
-        self.category_ids = None
-        self.country = None
-        self.fields = None
-        self.keywords = None
-        self.locale = None
-        self.page_no = None
-        self.page_size = None
-        self.target_currency = None
-        self.target_language = None
-        self.web_site = None
+        self.keyWord = None
+        self.local = None
+        self.countryCode = None
+        self.categoryId = None
+        self.sortBy = None
+        self.pageSize = None
+        self.pageIndex = None
+        self.currency = None
+        self.searchExtend = None
 
     def getapiname(self):
         return "aliexpress.ds.text.search"

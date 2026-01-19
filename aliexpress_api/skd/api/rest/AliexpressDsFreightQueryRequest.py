@@ -7,11 +7,8 @@ from ..base import RestApi
 class AliexpressDsFreightQueryRequest(RestApi):
     def __init__(self, domain="api-sg.aliexpress.com", port=80):
         RestApi.__init__(self, domain, port)
+        self.query_delivery_req = None
         self.app_signature = None
-        self.country_code = None
-        self.locale = None
-        self.product_list = None
-        self.web_site = None
 
     def getapiname(self):
         return "aliexpress.ds.freight.query"

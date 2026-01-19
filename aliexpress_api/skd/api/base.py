@@ -258,7 +258,7 @@ class RestApi(object):
             P_API: self.getapiname(),
         }
         if authrize is not None:
-            sys_parameters[P_SESSION] = authrize
+            sys_parameters[P_ACCESS_TOKEN] = authrize
         application_parameter = self.getApplicationParameters()
         sign_parameter = sys_parameters.copy()
         sign_parameter.update(application_parameter)
@@ -322,11 +322,12 @@ class RestApi(object):
                     application_parameter[key] = value
         # 查询翻译字典来规避一些关键字属性
         translate_parameter = self.getTranslateParas()
-        for key in application_parameter:
+        for key in list(application_parameter.keys()):
             value = application_parameter[key]
             if key in translate_parameter:
                 application_parameter[translate_parameter[key]] = application_parameter[
                     key
                 ]
                 del application_parameter[key]
+        print(f"DEBUG: API {self.getapiname()} final application parameters: {application_parameter}")
         return application_parameter
