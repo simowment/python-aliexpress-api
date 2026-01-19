@@ -67,7 +67,7 @@ child_categories = aliexpress.get_child_categories(parent_categories[0].category
 
 ## Dropshipping Features
 
-The SDK now includes comprehensive dropshipping endpoints. Here are some examples:
+The SDK now includes comprehensive dropshipper-specific endpoints. Here are some examples:
 
 **Get dropshipping product details:**
 
@@ -80,32 +80,38 @@ print(f"Product: {product.ae_item_base_info.subject}")
 print(f"Price: {product.ae_item_base_info.sale_price}")
 ```
 
-**Get dropshipping orders:**
+**Search dropshipping products:**
 
 ```python
-orders = aliexpress.get_ds_orders(
-    start_time='2024-01-01 00:00:00',
-    end_time='2024-01-31 23:59:59',
+results = aliexpress.text_search_ds(
+    keywords='bluetooth earphones',
+    country='US',
     page_no=1,
     page_size=20
 )
-for order in orders.orders:
-    print(f"Order ID: {order.order_id}")
-    print(f"Status: {order.order_status}")
+for item in results:
+    print(f"Found: {item}")
 ```
 
-**Get commission orders:**
+**Calculate freight:**
 
 ```python
-commission_orders = aliexpress.get_ds_commission_orders(
-    start_time='2024-01-01 00:00:00',
-    end_time='2024-01-31 23:59:59'
+freight = aliexpress.query_ds_freight(
+    country_code='US',
+    product_list=[{'product_id': '1005001234567890', 'sku_id': 'sku123'}]
 )
-for order in commission_orders.commission_orders:
-    print(f"Commission: {order.commission_amount}")
+print(f"Freight: {freight}")
 ```
 
-For more details on dropshipping endpoints, see [DROPSHIPPING_USAGE.md](DROPSHIPPING_USAGE.md).
+**Get dropshipping categories:**
+
+```python
+categories = aliexpress.get_ds_categories(country='US')
+for category in categories.categories:
+    print(f"Category: {category.category_name}")
+```
+
+For more details on dropshipping endpoints, see [DROPSHIPPING_ENDPOINTS.md](DROPSHIPPING_ENDPOINTS.md).
 
 ## License
 

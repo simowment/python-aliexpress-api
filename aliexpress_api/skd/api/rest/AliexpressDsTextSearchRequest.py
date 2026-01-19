@@ -4,13 +4,14 @@ Created by auto_sdk on 2023.11.27
 from ..base import RestApi
 
 
-class AliexpressDsRecommendFeedGetRequest(RestApi):
+class AliexpressDsTextSearchRequest(RestApi):
     def __init__(self, domain="api-sg.aliexpress.com", port=80):
         RestApi.__init__(self, domain, port)
         self.app_signature = None
+        self.category_ids = None
         self.country = None
         self.fields = None
-        self.feed_name = None
+        self.keywords = None
         self.locale = None
         self.page_no = None
         self.page_size = None
@@ -19,4 +20,4 @@ class AliexpressDsRecommendFeedGetRequest(RestApi):
         self.web_site = None
 
     def getapiname(self):
-        return "aliexpress.ds.recommend.feed.get"
+        return "aliexpress.ds.text.search"

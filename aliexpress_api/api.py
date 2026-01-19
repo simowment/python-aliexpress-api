@@ -751,3 +751,377 @@ class AliexpressApi:
         response = api_request(request, 'aliexpress_ds_recommend_feed_get_response')
 
         return response
+
+
+    def create_ds_order(self,
+                       address: dict,
+                       child_order_list: list,
+                       locale: str = None,
+                       web_site: str = None,
+                       **kwargs):
+        """Create and pay for a dropshipping order.
+
+        Args:
+            address (dict): Shipping address information.
+            child_order_list (list): List of child orders with product details.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Order creation response.
+
+        Raises:
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsOrderCreateRequest()
+        request.app_signature = self._app_signature
+        request.address = str(address)
+        request.child_order_list = str(child_order_list)
+        request.locale = locale
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_order_create_response')
+
+        return response
+
+
+    def query_ds_freight(self,
+                         country_code: str,
+                         product_list: list,
+                         locale: str = None,
+                         web_site: str = None,
+                         **kwargs):
+        """Query freight/shipping costs for products.
+
+        Args:
+            country_code (str): Country code for shipping destination.
+            product_list (list): List of products with SKU information.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Freight query response.
+
+        Raises:
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsFreightQueryRequest()
+        request.app_signature = self._app_signature
+        request.country_code = country_code
+        request.locale = locale
+        request.product_list = str(product_list)
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_freight_query_response')
+
+        return response
+
+
+    def get_ds_order_tracking(self,
+                             order_id: str,
+                             locale: str = None,
+                             web_site: str = None,
+                             **kwargs):
+        """Get tracking information for a dropshipping order.
+
+        Args:
+            order_id (str): The order ID.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Order tracking information.
+
+        Raises:
+            OrdersNotFoundException: If order not found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsOrderTrackingGetRequest()
+        request.app_signature = self._app_signature
+        request.locale = locale
+        request.order_id = order_id
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_order_tracking_get_response')
+
+        return response
+
+
+    def get_ds_feed_items(self,
+                         feed_name: str,
+                         locale: str = None,
+                         page_no: int = None,
+                         page_size: int = None,
+                         web_site: str = None,
+                         **kwargs):
+        """Fetch items with feed name in simple model.
+
+        Args:
+            feed_name (str): The feed name.
+            locale (str): Locale for the request.
+            page_no (int): Page number.
+            page_size (int): Number of records per page.
+            web_site (str): Website identifier.
+
+        Returns:
+            Feed items response.
+
+        Raises:
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsFeedItemidsGetRequest()
+        request.app_signature = self._app_signature
+        request.feed_name = feed_name
+        request.locale = locale
+        request.page_no = page_no
+        request.page_size = page_size
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_feed_itemids_get_response')
+
+        return response
+
+
+    def get_ds_product_special_info(self,
+                                    product_id: str,
+                                    fields: Union[str, List[str]] = None,
+                                    locale: str = None,
+                                    web_site: str = None,
+                                    **kwargs):
+        """Get special product information like certification.
+
+        Args:
+            product_id (str): The product ID.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Product special information.
+
+        Raises:
+            ProductsNotFoundException: If product not found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsProductSpecialinfoGetRequest()
+        request.app_signature = self._app_signature
+        request.fields = get_list_as_string(fields)
+        request.locale = locale
+        request.product_id = product_id
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_product_specialinfo_get_response')
+
+        return response
+
+
+    def get_ds_wholesale_product(self,
+                                 product_id: str,
+                                 fields: Union[str, List[str]] = None,
+                                 locale: str = None,
+                                 web_site: str = None,
+                                 **kwargs):
+        """Get product info for wholesale business.
+
+        Args:
+            product_id (str): The product ID.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Wholesale product information.
+
+        Raises:
+            ProductsNotFoundException: If product not found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsProductWholesaleGetRequest()
+        request.app_signature = self._app_signature
+        request.fields = get_list_as_string(fields)
+        request.locale = locale
+        request.product_id = product_id
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_product_wholesale_get_response')
+
+        return response
+
+
+    def calculate_buyer_freight(self,
+                                country_code: str,
+                                product_list: list,
+                                locale: str = None,
+                                web_site: str = None,
+                                **kwargs):
+        """Freight calculation interface provided for buyers.
+
+        Args:
+            country_code (str): Country code for shipping destination.
+            product_list (list): List of products with SKU information.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Freight calculation response.
+
+        Raises:
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressLogisticsBuyerFreightCalculateRequest()
+        request.app_signature = self._app_signature
+        request.country_code = country_code
+        request.locale = locale
+        request.product_list = str(product_list)
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_logistics_buyer_freight_calculate_response')
+
+        return response
+
+
+    def text_search_ds(self,
+                       keywords: str,
+                       category_ids: Union[str, List[str]] = None,
+                       country: str = None,
+                       fields: Union[str, List[str]] = None,
+                       locale: str = None,
+                       page_no: int = None,
+                       page_size: int = None,
+                       **kwargs):
+        """Text search for dropshipping products.
+
+        Args:
+            keywords (str): Search keywords.
+            category_ids (str | list[str]): Category IDs to filter by.
+            country (str): Country code for targeting.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            page_no (int): Page number.
+            page_size (int): Number of records per page.
+
+        Returns:
+            Search results.
+
+        Raises:
+            ProductsNotFoundException: If no products found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsTextSearchRequest()
+        request.app_signature = self._app_signature
+        request.category_ids = get_list_as_string(category_ids)
+        request.country = country
+        request.fields = get_list_as_string(fields)
+        request.keywords = keywords
+        request.locale = locale
+        request.page_no = page_no
+        request.page_size = page_size
+        request.target_currency = self._currency
+        request.target_language = self._language
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_text_search_response')
+
+        if response.current_record_count > 0:
+            return response
+        else:
+            raise ProductsNotFoudException('No products found with current parameters')
+
+
+    def report_ds_search_event(self,
+                               event_list: list,
+                               locale: str = None,
+                               web_site: str = None,
+                               **kwargs):
+        """Report search events for analytics.
+
+        Args:
+            event_list (list): List of search events to report.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Event report response.
+
+        Raises:
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsSearchEventReportRequest()
+        request.app_signature = self._app_signature
+        request.event_list = str(event_list)
+        request.locale = locale
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_search_event_report_response')
+
+        return response
+
+
+    def get_ds_member_benefit(self,
+                             locale: str = None,
+                             web_site: str = None,
+                             **kwargs):
+        """Get dropshipper member benefits.
+
+        Args:
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Member benefit information.
+
+        Raises:
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsMemberBenefitGetRequest()
+        request.app_signature = self._app_signature
+        request.locale = locale
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_member_benefit_get_response')
+
+        return response
+
+
+    def get_trade_ds_order(self,
+                           order_id: str,
+                           fields: Union[str, List[str]] = None,
+                           locale: str = None,
+                           web_site: str = None,
+                           **kwargs):
+        """Buyer query order details.
+
+        Args:
+            order_id (str): The order ID.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Order details.
+
+        Raises:
+            OrdersNotFoundException: If order not found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressTradeDsOrderGetRequest()
+        request.app_signature = self._app_signature
+        request.fields = get_list_as_string(fields)
+        request.locale = locale
+        request.order_id = order_id
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_trade_ds_order_get_response')
+
+        return response
