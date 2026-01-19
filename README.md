@@ -13,6 +13,7 @@ A simple Python wrapper for the [AliExpress Open Platform API](https://developer
 - Requests follow the [official documentation](https://developers.aliexpress.com/en/doc.htm?docId=45803&docType=2).
 - Ask for new features through the [issues](https://github.com/sergioteula/python-aliexpress-api/issues) section.
 - Join our [Telegram group](https://t.me/PythonAliExpressAPI) for support or development.
+- **Dropshipping support**: Comprehensive dropshipping endpoints for product management, order tracking, and commission tracking.
 
 ## Installation
 
@@ -63,6 +64,54 @@ print(response.products[0].product_main_image_url)
 parent_categories = aliexpress.get_parent_categories()
 child_categories = aliexpress.get_child_categories(parent_categories[0].category_id)
 ```
+
+## Dropshipping Features
+
+The SDK now includes comprehensive dropshipper-specific endpoints. Here are some examples:
+
+**Get dropshipping product details:**
+
+```python
+product = aliexpress.get_ds_product(
+    product_id='1005001234567890',
+    country='US'
+)
+print(f"Product: {product.ae_item_base_info.subject}")
+print(f"Price: {product.ae_item_base_info.sale_price}")
+```
+
+**Search dropshipping products:**
+
+```python
+results = aliexpress.text_search_ds(
+    keywords='bluetooth earphones',
+    country='US',
+    page_no=1,
+    page_size=20
+)
+for item in results:
+    print(f"Found: {item}")
+```
+
+**Calculate freight:**
+
+```python
+freight = aliexpress.query_ds_freight(
+    country_code='US',
+    product_list=[{'product_id': '1005001234567890', 'sku_id': 'sku123'}]
+)
+print(f"Freight: {freight}")
+```
+
+**Get dropshipping categories:**
+
+```python
+categories = aliexpress.get_ds_categories(country='US')
+for category in categories.categories:
+    print(f"Category: {category.category_name}")
+```
+
+For more details on dropshipping endpoints, see [DROPSHIPPING_ENDPOINTS.md](DROPSHIPPING_ENDPOINTS.md).
 
 ## License
 
