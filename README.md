@@ -13,6 +13,7 @@ A simple Python wrapper for the [AliExpress Open Platform API](https://developer
 - Requests follow the [official documentation](https://developers.aliexpress.com/en/doc.htm?docId=45803&docType=2).
 - Ask for new features through the [issues](https://github.com/sergioteula/python-aliexpress-api/issues) section.
 - Join our [Telegram group](https://t.me/PythonAliExpressAPI) for support or development.
+- **Dropshipping support**: Comprehensive dropshipping endpoints for product management, order tracking, and commission tracking.
 
 ## Installation
 
@@ -63,6 +64,48 @@ print(response.products[0].product_main_image_url)
 parent_categories = aliexpress.get_parent_categories()
 child_categories = aliexpress.get_child_categories(parent_categories[0].category_id)
 ```
+
+## Dropshipping Features
+
+The SDK now includes comprehensive dropshipping endpoints. Here are some examples:
+
+**Get dropshipping product details:**
+
+```python
+product = aliexpress.get_ds_product(
+    product_id='1005001234567890',
+    country='US'
+)
+print(f"Product: {product.ae_item_base_info.subject}")
+print(f"Price: {product.ae_item_base_info.sale_price}")
+```
+
+**Get dropshipping orders:**
+
+```python
+orders = aliexpress.get_ds_orders(
+    start_time='2024-01-01 00:00:00',
+    end_time='2024-01-31 23:59:59',
+    page_no=1,
+    page_size=20
+)
+for order in orders.orders:
+    print(f"Order ID: {order.order_id}")
+    print(f"Status: {order.order_status}")
+```
+
+**Get commission orders:**
+
+```python
+commission_orders = aliexpress.get_ds_commission_orders(
+    start_time='2024-01-01 00:00:00',
+    end_time='2024-01-31 23:59:59'
+)
+for order in commission_orders.commission_orders:
+    print(f"Commission: {order.commission_amount}")
+```
+
+For more details on dropshipping endpoints, see [DROPSHIPPING_USAGE.md](DROPSHIPPING_USAGE.md).
 
 ## License
 

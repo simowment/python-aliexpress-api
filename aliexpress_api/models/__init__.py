@@ -7,3 +7,14 @@ from .product import Product, ProductsResponse
 from .category import Category, ChildCategory
 from .order import Order
 from .orderlist import OrderListResponse
+from .dropshipping import (
+    DsProduct,
+    DsCategory,
+    DsOrder,
+    DsCommissionOrder,
+    DsProductGetResponse,
+    DsCategoryGetResponse,
+    DsOrderListResponse,
+    DsCommissionOrderListResponse,
+    DsTradeOrderGetResponse,
+)

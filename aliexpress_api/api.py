@@ -431,3 +431,323 @@ class AliexpressApi:
             raise OrdersNotFoundException("No orders found for the specified parameters")
 
 
+
+    def get_ds_product(self,
+                       product_id: str,
+                       country: str = None,
+                       fields: Union[str, List[str]] = None,
+                       locale: str = None,
+                       web_site: str = None,
+                       **kwargs) -> models.DsProductGetResponse:
+        """Get detailed information about a dropshipping product.
+
+        Args:
+            product_id (str): The product ID.
+            country (str): Country code for targeting.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            models.DsProductGetResponse: Contains product information including base info,
+                properties, SKU info, logistics, package, and multimedia info.
+
+        Raises:
+            ProductsNotFoundException: If product not found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsProductGetRequest()
+        request.app_signature = self._app_signature
+        request.country = country
+        request.fields = get_list_as_string(fields)
+        request.locale = locale
+        request.target_currency = self._currency
+        request.target_language = self._language
+        request.web_site = web_site
+        request.product_id = product_id
+
+        response = api_request(request, 'aliexpress_ds_product_get_response')
+
+        return response
+
+
+    def get_ds_categories(self,
+                          country: str = None,
+                          fields: Union[str, List[str]] = None,
+                          locale: str = None,
+                          web_site: str = None,
+                          **kwargs) -> models.DsCategoryGetResponse:
+        """Get dropshipping categories.
+
+        Args:
+            country (str): Country code for targeting.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            models.DsCategoryGetResponse: Contains category information including parent
+                and child categories.
+
+        Raises:
+            CategoriesNotFoudException: If no categories found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsCategoryGetRequest()
+        request.app_signature = self._app_signature
+        request.country = country
+        request.fields = get_list_as_string(fields)
+        request.locale = locale
+        request.target_currency = self._currency
+        request.target_language = self._language
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_category_get_response')
+
+        return response
+
+
+    def add_dropshipper(self,
+                        email: str,
+                        mobile: str = None,
+                        app_name: str = None,
+                        country: str = None,
+                        locale: str = None,
+                        platform: str = None,
+                        **kwargs):
+        """Add a new dropshipper.
+
+        Args:
+            email (str): Dropshipper's email address.
+            mobile (str): Dropshipper's mobile number.
+            app_name (str): Application name.
+            country (str): Country code.
+            locale (str): Locale for the request.
+            platform (str): Platform identifier.
+
+        Returns:
+            The API response.
+
+        Raises:
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.DsDropshpperAddRequest()
+        request.app_signature = self._app_signature
+        request.app_name = app_name
+        request.country = country
+        request.email = email
+        request.locale = locale
+        request.mobile = mobile
+        request.platform = platform
+
+        response = api_request(request, 'ds_dropshpper_add_response')
+
+        return response
+
+
+    def get_ds_orders(self,
+                       start_time: str,
+                       end_time: str,
+                       status: str = None,
+                       fields: Union[str, List[str]] = None,
+                       locale: str = None,
+                       page_no: int = None,
+                       page_size: int = None,
+                       **kwargs) -> models.DsOrderListResponse:
+        """Get list of dropshipping orders.
+
+        Args:
+            start_time (str): Start time in format 'YYYY-MM-DD HH:MM:SS'.
+            end_time (str): End time in format 'YYYY-MM-DD HH:MM:SS'.
+            status (str): Order status filter.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            page_no (int): Page number.
+            page_size (int): Number of records per page.
+
+        Returns:
+            models.DsOrderListResponse: Contains order information.
+
+        Raises:
+            OrdersNotFoundException: If no orders found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.DsOrderListRequest()
+        request.app_signature = self._app_signature
+        request.end_time = end_time
+        request.fields = get_list_as_string(fields)
+        request.locale = locale
+        request.page_no = page_no
+        request.page_size = page_size
+        request.start_time = start_time
+        request.status = status
+
+        response = api_request(request, 'ds_order_list_response')
+
+        if response.current_record_count > 0:
+            return response
+        else:
+            raise OrdersNotFoundException("No orders found for the specified parameters")
+
+
+    def get_ds_trade_order(self,
+                           order_id: str,
+                           fields: Union[str, List[str]] = None,
+                           locale: str = None,
+                           **kwargs) -> models.DsTradeOrderGetResponse:
+        """Get detailed information about a dropshipping trade order.
+
+        Args:
+            order_id (str): The order ID.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+
+        Returns:
+            models.DsTradeOrderGetResponse: Contains detailed order information including
+                products and logistics.
+
+        Raises:
+            OrdersNotFoundException: If order not found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsTradeOrderGetRequest()
+        request.app_signature = self._app_signature
+        request.fields = get_list_as_string(fields)
+        request.locale = locale
+        request.order_id = order_id
+
+        response = api_request(request, 'aliexpress_ds_trade_order_get_response')
+
+        return response
+
+
+    def get_ds_commission_orders(self,
+                                 start_time: str,
+                                 end_time: str,
+                                 fields: Union[str, List[str]] = None,
+                                 locale: str = None,
+                                 page_no: int = None,
+                                 page_size: int = None,
+                                 **kwargs) -> models.DsCommissionOrderListResponse:
+        """Get list of dropshipping commission orders.
+
+        Args:
+            start_time (str): Start time in format 'YYYY-MM-DD HH:MM:SS'.
+            end_time (str): End time in format 'YYYY-MM-DD HH:MM:SS'.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            page_no (int): Page number.
+            page_size (int): Number of records per page.
+
+        Returns:
+            models.DsCommissionOrderListResponse: Contains commission order information.
+
+        Raises:
+            OrdersNotFoundException: If no orders found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsCommissionorderListbyindexRequest()
+        request.app_signature = self._app_signature
+        request.end_time = end_time
+        request.fields = get_list_as_string(fields)
+        request.locale = locale
+        request.page_no = page_no
+        request.page_size = page_size
+        request.start_time = start_time
+
+        response = api_request(request, 'aliexpress_ds_commissionorder_listbyindex_response')
+
+        if response.current_record_count > 0:
+            return response
+        else:
+            raise OrdersNotFoundException("No commission orders found for the specified parameters")
+
+
+    def ds_image_search(self,
+                        image_id: str,
+                        country: str = None,
+                        fields: Union[str, List[str]] = None,
+                        locale: str = None,
+                        web_site: str = None,
+                        **kwargs):
+        """Search for products using an image.
+
+        Args:
+            image_id (str): The image ID to search with.
+            country (str): Country code for targeting.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            web_site (str): Website identifier.
+
+        Returns:
+            Products matching the image search.
+
+        Raises:
+            ProductsNotFoundException: If no products found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsImageSearchRequest()
+        request.app_signature = self._app_signature
+        request.country = country
+        request.fields = get_list_as_string(fields)
+        request.image_id = image_id
+        request.locale = locale
+        request.target_currency = self._currency
+        request.target_language = self._language
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_image_search_response')
+
+        return response
+
+
+    def get_ds_recommend_feed(self,
+                              feed_name: str = None,
+                              country: str = None,
+                              fields: Union[str, List[str]] = None,
+                              locale: str = None,
+                              page_no: int = None,
+                              page_size: int = None,
+                              web_site: str = None,
+                              **kwargs):
+        """Get recommended feed products for dropshipping.
+
+        Args:
+            feed_name (str): The feed name to get recommendations from.
+            country (str): Country code for targeting.
+            fields (str | list[str]): Fields to include in the response.
+            locale (str): Locale for the request.
+            page_no (int): Page number.
+            page_size (int): Number of records per page.
+            web_site (str): Website identifier.
+
+        Returns:
+            Recommended feed products.
+
+        Raises:
+            ProductsNotFoundException: If no products found.
+            ApiRequestException: If the API request fails.
+            ApiRequestResponseException: If the API response is invalid.
+        """
+        request = aliapi.rest.AliexpressDsRecommendFeedGetRequest()
+        request.app_signature = self._app_signature
+        request.country = country
+        request.fields = get_list_as_string(fields)
+        request.feed_name = feed_name
+        request.locale = locale
+        request.page_no = page_no
+        request.page_size = page_size
+        request.target_currency = self._currency
+        request.target_language = self._language
+        request.web_site = web_site
+
+        response = api_request(request, 'aliexpress_ds_recommend_feed_get_response')
+
+        return response
