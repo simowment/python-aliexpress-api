@@ -174,10 +174,10 @@
     "/ds_image_search": {
       "post": {
         "operationId": "ds_image_search",
-        "summary": "Search for products using an image.",
+        "summary": "Search for products using an image (V2).",
         "parameters": [
           {
-            "name": "image_id",
+            "name": "image_bytes",
             "in": "query",
             "required": true,
             "schema": {
@@ -185,7 +185,7 @@
             }
           },
           {
-            "name": "country",
+            "name": "sort",
             "in": "query",
             "required": false,
             "schema": {
@@ -193,25 +193,23 @@
             }
           },
           {
-            "name": "fields",
+            "name": "search_type",
             "in": "query",
             "required": false,
             "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              ]
+              "type": "integer"
             }
           },
           {
-            "name": "locale",
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "target_currency",
             "in": "query",
             "required": false,
             "schema": {
@@ -219,7 +217,36 @@
             }
           },
           {
-            "name": "web_site",
+            "name": "target_language",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response"
+          }
+        }
+      }
+    },
+    "/generate_access_token": {
+      "post": {
+        "operationId": "generate_access_token",
+        "summary": "Generates an access token using the authorization code.",
+        "parameters": [
+          {
+            "name": "code",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "uuid",
             "in": "query",
             "required": false,
             "schema": {
@@ -2364,7 +2391,7 @@
         },
         "description": "Product ID conversion result."
       },
-      "DsProductGetResult": {
+      "DsProductGetResponse": {
         "type": "object",
         "properties": {
           "ae_item_base_info_dto": {
@@ -2402,15 +2429,6 @@
           },
           "has_whole_sale": {
             "type": "string"
-          }
-        },
-        "description": "Detailed result for product info query."
-      },
-      "DsProductGetResponse": {
-        "type": "object",
-        "properties": {
-          "result": {
-            "$ref": "#/components/schemas/DsProductGetResult"
           },
           "code": {
             "type": "string"
@@ -2425,7 +2443,7 @@
             "type": "string"
           }
         },
-        "description": "Response for getting dropshipping product details."
+        "description": "Response for getting dropshipping product details.\n    \n    This model mirrors the structure inside the 'result' or 'resp_result' \n    field of the API response."
       },
       "OrderLogisticsInfo": {
         "type": "object",
@@ -2757,52 +2775,7 @@
         },
         "description": "ProductsResponse(current_page_no: int = 0, current_record_count: int = 0, total_record_count: int = 0, products: List[aliexpress_api.models.product.Product] = <factory>)"
       },
-      "DsSearchProduct": {
-        "type": "object",
-        "properties": {
-          "itemId": {
-            "type": "string"
-          },
-          "title": {
-            "type": "string"
-          },
-          "itemMainPic": {
-            "type": "string"
-          },
-          "itemUrl": {
-            "type": "string"
-          },
-          "salePrice": {
-            "type": "string"
-          },
-          "salePriceCurrency": {
-            "type": "string"
-          },
-          "originalPrice": {
-            "type": "string"
-          },
-          "originalPriceCurrency": {
-            "type": "string"
-          },
-          "discount": {
-            "type": "string"
-          },
-          "evaluateRate": {
-            "type": "string"
-          },
-          "orders": {
-            "type": "string"
-          },
-          "score": {
-            "type": "string"
-          },
-          "videoUrl": {
-            "type": "string"
-          }
-        },
-        "description": "Product information from search results."
-      },
-      "DsTextSearchResult": {
+      "DsTextSearchResponse": {
         "type": "object",
         "properties": {
           "totalCount": {
@@ -2810,33 +2783,9 @@
           },
           "pageIndex": {
             "type": "integer"
-          },
-          "pageSize": {
-            "type": "integer"
-          },
-          "products": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/DsSearchProduct"
-            }
           }
         },
-        "description": "Result data for dropshipping text search."
-      },
-      "DsTextSearchResponse": {
-        "type": "object",
-        "properties": {
-          "data": {
-            "$ref": "#/components/schemas/DsTextSearchResult"
-          },
-          "code": {
-            "type": "string"
-          },
-          "msg": {
-            "type": "string"
-          }
-        },
-        "description": "Response for dropshipping text search."
+        "description": "Response for dropshipping text search.\n    \n    This model mirrors the structure inside the 'result' or 'resp_result' \n    field of the API response."
       }
     }
   }

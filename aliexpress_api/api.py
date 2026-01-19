@@ -56,3 +56,46 @@ class AliexpressApi(CommonMixin, AffiliateMixin, DropshippingMixin):
                 setattr(request, key, value)
         
         return request
+
+    def generate_access_token(self, code: str, uuid: str = None):
+        """Generates an access token using the authorization code.
+        
+        Args:
+            code (str): The oauth code obtained from app callback.
+            uuid (str, optional): UUID.
+            
+        Returns:
+            dict: The JSON response containing access_token, refresh_token, etc.
+        """
+        import requests
+        import time
+        from .sdk.api.base import sign
+
+        url = "https://api-sg.aliexpress.com/rest/2.0/auth/token/create"
+        
+        # System parameters
+        params = {
+            "app_key": self._key,
+            "timestamp": str(int(time.time() * 1000)),
+            "sign_method": "md5",
+            "partner_id": "taobao-sdk-python-20200924",
+            "format": "json",
+            "v": "2.0",
+        }
+        
+        # Application parameters
+        app_params = {
+            "code": code,
+        }
+        if uuid:
+            app_params["uuid"] = uuid
+            
+        params.update(app_params)
+        
+        # Sign
+        params["sign"] = sign(self._secret, params)
+        
+        response = requests.post(url, data=params)
+        response.raise_for_status()
+        
+        return response.json()

@@ -14,7 +14,7 @@ setuptools.setup(
     license='MIT',
     url='https://github.com/sergioteula/python-aliexpress-api',
     packages=setuptools.find_packages(),
-    install_requires=['setuptools'],
+    install_requires=['setuptools', 'requests'],
     classifiers=[
         'Programming Language :: Python',
         'License :: OSI Approved :: MIT License',

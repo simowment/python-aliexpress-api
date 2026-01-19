@@ -18,4 +18,11 @@ from .dropshipping import (
     DsCommissionOrderListResponse,
     DsTradeOrderGetResponse,
     DsTextSearchResponse,
+    DsOrderTrackingGetResponse,
+    DsFeedItemIdsGetResponse,
+    DsMemberBenefitGetResponse,
+    DsProductSpecialInfoGetResponse,
+    DsProductWholesaleGetResponse,
+    DsSearchEventReportResponse,
+    BuyerFreightCalculateResponse,
 )

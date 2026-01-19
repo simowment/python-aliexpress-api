@@ -161,8 +161,22 @@ class DsProductGetResult(BaseModel):
 
 @dataclass
 class DsProductGetResponse(BaseModel):
-    """Response for getting dropshipping product details."""
-    result: DsProductGetResult = field(default_factory=DsProductGetResult)
+    """Response for getting dropshipping product details.
+    
+    This model mirrors the structure inside the 'result' or 'resp_result' 
+    field of the API response.
+    """
+    ae_item_base_info_dto: AeItemBaseInfoDto = field(default_factory=AeItemBaseInfoDto)
+    ae_multimedia_info_dto: AeMultimediaInfoDto = field(default_factory=AeMultimediaInfoDto)
+    ae_item_sku_info_dtos: List[AeItemSkuInfoDto] = field(default_factory=list)
+    package_info_dto: PackageInfoDto = field(default_factory=PackageInfoDto)
+    logistics_info_dto: LogisticsInfoDto = field(default_factory=LogisticsInfoDto)
+    ae_store_info: StoreInfo = field(default_factory=StoreInfo)
+    ae_item_properties: List[ItemProperty] = field(default_factory=list)
+    manufacturer_info: Optional[ManufacturerInfo] = None
+    product_id_converter_result: Optional[ProductIdConverterResult] = None
+    has_whole_sale: Optional[str] = None
+    # Common response fields that might be inside result
     code: str = ""
     rsp_code: str = ""
     rsp_msg: str = ""
@@ -288,8 +302,58 @@ class DsTextSearchResult(BaseModel):
 
 @dataclass
 class DsTextSearchResponse(BaseModel):
-    """Response for dropshipping text search."""
-    data: Optional[DsTextSearchResult] = None
-    code: Optional[str] = None
-    msg: Optional[str] = None
+    """Response for dropshipping text search.
+    
+    This model mirrors the structure inside the 'result' or 'resp_result' 
+    field of the API response.
+    """
+    totalCount: int = 0
+    pageIndex: int = 0
 
+
+@dataclass
+class DsOrderTrackingUrl(BaseModel):
+    """Tracking URL info."""
+    service_name: str = ""
+    order_id: str = ""
+    tracking_order_url: str = ""
+
+@dataclass
+class DsOrderTrackingGetResponse(BaseModel):
+    """Response for getting dropshipping order tracking."""
+    result_list: List[DsOrderTrackingUrl] = field(default_factory=list)
+    
+@dataclass
+class DsFeedItemIdsGetResponse(BaseModel):
+    """Response for getting feed item IDs."""
+    item_ids: List[int] = field(default_factory=list)
+
+@dataclass
+class DsMemberBenefitGetResponse(BaseModel):
+    """Response for getting member benefits."""
+    level: str = ""
+    level_status: str = ""
+    # Add other fields as discovered
+
+@dataclass
+class DsProductSpecialInfoGetResponse(BaseModel):
+    """Response for product special info."""
+    # Structure unknown, likely dictionary or specific fields
+    pass
+
+@dataclass
+class DsProductWholesaleGetResponse(BaseModel):
+    """Response for product wholesale info."""
+    # Likely contains wholesale price tiers similar to product info
+    pass
+
+@dataclass
+class DsSearchEventReportResponse(BaseModel):
+    """Response for reporting search events."""
+    result: bool = False
+
+@dataclass
+class BuyerFreightCalculateResponse(BaseModel):
+    """Response for buyer freight calculation."""
+    # Likely contains specific freight options and costs
+    pass

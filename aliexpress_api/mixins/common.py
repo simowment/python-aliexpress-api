@@ -141,7 +141,11 @@ class CommonMixin:
             web_site=web_site
         )
 
-        response = api_request(request, 'aliexpress_logistics_buyer_freight_calculate_response')
+        response = api_request(
+            request, 
+            'aliexpress_logistics_buyer_freight_calculate_response',
+            models.BuyerFreightCalculateResponse
+        )
 
         return response
 

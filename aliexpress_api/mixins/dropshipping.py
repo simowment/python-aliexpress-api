@@ -47,7 +47,12 @@ class DropshippingMixin:
             city_code=city_code
         )
 
-        response = api_request(request, "aliexpress_ds_product_get_response", session=self._token)
+        response = api_request(
+            request, 
+            "aliexpress_ds_product_get_response", 
+            models.DsProductGetResponse,
+            session=self._token
+        )
 
         return response
 
@@ -78,7 +83,12 @@ class DropshippingMixin:
             language=language or str(self._language).lower()
         )
 
-        response = api_request(request, "aliexpress_ds_category_get_response", session=self._token)
+        response = api_request(
+            request, 
+            "aliexpress_ds_category_get_response", 
+            models.DsCategoryGetResponse, 
+            session=self._token
+        )
         
         return response
 
@@ -258,21 +268,23 @@ class DropshippingMixin:
 
     def ds_image_search(
         self,
-        image_id: str,
-        country: str = None,
-        fields: Union[str, List[str]] = None,
-        locale: str = None,
-        web_site: str = None,
+        image_bytes: bytes,
+        sort: str = "default",
+        search_type: int = 0,
+        limit: int = 20,
+        target_currency: str = None,
+        target_language: str = None,
         **kwargs,
     ):
-        """Search for products using an image.
+        """Search for products using an image (V2).
 
         Args:
-            image_id (str): The image ID to search with.
-            country (str): Country code for targeting.
-            fields (str | list[str]): Fields to include in the response.
-            locale (str): Locale for the request.
-            web_site (str): Website identifier.
+            image_bytes (bytes): The image file bytes.
+            sort (str): default, min_price, max_price, sales, last_volume.
+            search_type (int): 0: image search, 1: similar product search.
+            limit (int): 1-50, default 20.
+            target_currency (str): Target currency (e.g. USD).
+            target_language (str): Target language (e.g. EN).
 
         Returns:
             Products matching the image search.
@@ -283,17 +295,16 @@ class DropshippingMixin:
             ApiRequestResponseException: If the API response is invalid.
         """
         request = self._prepare_request(
-            aliapi.rest.AliexpressDsImageSearchRequest(),
-            country=country,
-            fields=get_list_as_string(fields),
-            image_id=image_id,
-            locale=locale,
-            target_currency=self._currency,
-            target_language=str(self._language).lower(),
-            web_site=web_site
+            aliapi.rest.AliexpressDsImageSearchV2Request(),
+            image_file_bytes=image_bytes,
+            sort=sort,
+            search_type=search_type,
+            limit=limit,
+            target_currency=target_currency or self._currency,
+            target_language=target_language or str(self._language).lower()
         )
 
-        response = api_request(request, "aliexpress_ds_image_search_response")
+        response = api_request(request, "aliexpress_ds_image_search_v2_response", session=self._token)
 
         return response
 
@@ -476,7 +487,12 @@ class DropshippingMixin:
             language=language or str(self._language).lower()
         )
 
-        response = api_request(request, "aliexpress_ds_order_tracking_get_response")
+        response = api_request(
+            request, 
+            "aliexpress_ds_order_tracking_get_response", 
+            models.DsOrderTrackingGetResponse, 
+            session=self._token
+        )
 
         return response
 
@@ -514,7 +530,12 @@ class DropshippingMixin:
             web_site=web_site
         )
 
-        response = api_request(request, "aliexpress_ds_feed_itemids_get_response")
+        response = api_request(
+            request, 
+            "aliexpress_ds_feed_itemids_get_response", 
+            models.DsFeedItemIdsGetResponse, 
+            session=self._token
+        )
 
         return response
 
@@ -551,7 +572,10 @@ class DropshippingMixin:
         )
 
         response = api_request(
-            request, "aliexpress_ds_product_specialinfo_get_response"
+            request, 
+            "aliexpress_ds_product_specialinfo_get_response",
+            models.DsProductSpecialInfoGetResponse, 
+            session=self._token
         )
 
         return response
@@ -587,7 +611,12 @@ class DropshippingMixin:
             product_id=product_id,
             web_site=web_site
         )
-        response = api_request(request, "aliexpress_ds_product_wholesale_get_response")
+        response = api_request(
+            request, 
+            "aliexpress_ds_product_wholesale_get_response", 
+            models.DsProductWholesaleGetResponse, 
+            session=self._token
+        )
 
         return response
 
@@ -666,7 +695,12 @@ class DropshippingMixin:
             web_site=web_site
         )
 
-        response = api_request(request, "aliexpress_ds_search_event_report_response")
+        response = api_request(
+            request, 
+            "aliexpress_ds_search_event_report_response", 
+            models.DsSearchEventReportResponse, 
+            session=self._token
+        )
 
         return response
 
@@ -690,7 +724,12 @@ class DropshippingMixin:
             web_site=web_site
         )
 
-        response = api_request(request, "aliexpress_ds_member_benefit_get_response")
+        response = api_request(
+            request, 
+            "aliexpress_ds_member_benefit_get_response", 
+            models.DsMemberBenefitGetResponse, 
+            session=self._token
+        )
 
         return response
 
