@@ -387,10 +387,14 @@ class DropshippingMixin:
             aliapi.rest.AliexpressDsOrderCreateRequest()
         )
         
+        # Ensure locale is included in logistics_address if not already present
+        logistics_address_with_locale = logistics_address.copy()
+        if 'locale' not in logistics_address_with_locale:
+            logistics_address_with_locale['locale'] = locale or f"{str(self._language).lower()}_US"
+        
         order_params = {
-            "logistics_address": logistics_address,
-            "product_items": product_items,
-            "locale": locale or f"{str(self._language).lower()}_US"
+            "logistics_address": logistics_address_with_locale,
+            "product_items": product_items
         }
         
         if out_order_id:
