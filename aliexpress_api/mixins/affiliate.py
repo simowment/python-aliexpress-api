@@ -274,7 +274,7 @@ class AffiliateMixin:
             start_time=start_time,
             end_time=end_time,
             fields=get_list_as_string(fields),
-            locale_site=locale_site,
+            locale_site=locale_site or f"{str(self._language).lower()}_US",
             page_no=page_no,
             page_size=page_size,
             status=status

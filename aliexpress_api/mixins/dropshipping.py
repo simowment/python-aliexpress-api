@@ -18,6 +18,7 @@ class DropshippingMixin:
         biz_model: Optional[str] = None,
         province_code: Optional[str] = None,
         city_code: Optional[str] = None,
+        locale: Optional[str] = None,
         **kwargs,
     ) -> models.DsProductGetResponse:
         """Get detailed information about a dropshipping product.
@@ -31,6 +32,7 @@ class DropshippingMixin:
             biz_model (str, optional): Business model.
             province_code (str, optional): Province code.
             city_code (str, optional): City code.
+            locale (str, optional): Locale for the request.
 
         Returns:
             models.DsProductGetResponse: Detailed product information.
@@ -44,7 +46,8 @@ class DropshippingMixin:
             remove_personal_benefit=remove_personal_benefit,
             biz_model=biz_model,
             province_code=province_code,
-            city_code=city_code
+            city_code=city_code,
+            locale=locale or f"{str(self._language).lower()}_{ship_to_country.upper()}"
         )
 
         response = api_request(
@@ -167,7 +170,7 @@ class DropshippingMixin:
             aliapi.rest.DsOrderListRequest(),
             end_time=end_time,
             fields=get_list_as_string(fields),
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             page_no=page_no,
             page_size=page_size,
             start_time=start_time,
@@ -209,7 +212,7 @@ class DropshippingMixin:
         request = self._prepare_request(
             aliapi.rest.AliexpressDsTradeOrderGetRequest(),
             fields=get_list_as_string(fields),
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             order_id=order_id
         )
 
@@ -249,7 +252,7 @@ class DropshippingMixin:
             aliapi.rest.AliexpressDsCommissionorderListbyindexRequest(),
             end_time=end_time,
             fields=get_list_as_string(fields),
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             page_no=page_no,
             page_size=page_size,
             start_time=start_time
@@ -343,7 +346,7 @@ class DropshippingMixin:
             country=country,
             fields=get_list_as_string(fields),
             feed_name=feed_name,
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_{country.upper() if country else 'US'}",
             page_no=page_no,
             page_size=page_size,
             target_currency=self._currency,
@@ -386,11 +389,10 @@ class DropshippingMixin:
         
         order_params = {
             "logistics_address": logistics_address,
-            "product_items": product_items
+            "product_items": product_items,
+            "locale": locale or f"{str(self._language).lower()}_US"
         }
         
-        if locale:
-            order_params['locale'] = locale
         if out_order_id:
             order_params['out_order_id'] = out_order_id
 
@@ -445,7 +447,7 @@ class DropshippingMixin:
             "selectedSkuId": sku_id,
             "shipToCountry": country_code,
             "quantity": quantity,
-            "locale": locale if locale else "en_US",
+            "locale": locale if locale else f"{str(self._language).lower()}_{country_code.upper()}",
             "currency": currency if currency else self._currency,
             "language": language if language else str(self._language).lower()
         }
@@ -524,7 +526,7 @@ class DropshippingMixin:
         request = self._prepare_request(
             aliapi.rest.AliexpressDsFeedItemidsGetRequest(),
             feed_name=feed_name,
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             page_no=page_no,
             page_size=page_size,
             web_site=web_site
@@ -566,7 +568,7 @@ class DropshippingMixin:
         request = self._prepare_request(
             aliapi.rest.AliexpressDsProductSpecialinfoGetRequest(),
             fields=get_list_as_string(fields),
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             product_id=product_id,
             web_site=web_site
         )
@@ -607,14 +609,14 @@ class DropshippingMixin:
         request = self._prepare_request(
             aliapi.rest.AliexpressDsProductWholesaleGetRequest(),
             fields=get_list_as_string(fields),
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             product_id=product_id,
             web_site=web_site
         )
         response = api_request(
-            request, 
-            "aliexpress_ds_product_wholesale_get_response", 
-            models.DsProductWholesaleGetResponse, 
+            request,
+            "aliexpress_ds_product_wholesale_get_response",
+            models.DsProductWholesaleGetResponse,
             session=self._token
         )
 
@@ -691,7 +693,7 @@ class DropshippingMixin:
         request = self._prepare_request(
             aliapi.rest.AliexpressDsSearchEventReportRequest(),
             event_list=str(event_list),
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             web_site=web_site
         )
 
@@ -720,7 +722,7 @@ class DropshippingMixin:
         """
         request = self._prepare_request(
             aliapi.rest.AliexpressDsMemberBenefitGetRequest(),
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             web_site=web_site
         )
 
@@ -760,7 +762,7 @@ class DropshippingMixin:
         request = self._prepare_request(
             aliapi.rest.AliexpressTradeDsOrderGetRequest(),
             fields=get_list_as_string(fields),
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_US",
             order_id=order_id,
             web_site=web_site
         )

@@ -136,7 +136,7 @@ class CommonMixin:
         request = self._prepare_request(
             aliapi.rest.AliexpressLogisticsBuyerFreightCalculateRequest(),
             country_code=country_code,
-            locale=locale,
+            locale=locale or f"{str(self._language).lower()}_{country_code.upper()}",
             product_list=str(product_list),
             web_site=web_site
         )

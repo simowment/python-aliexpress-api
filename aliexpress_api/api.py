@@ -1,8 +1,25 @@
-"""AliExpress API wrapper for Python
+﻿"""AliExpress API wrapper for Python.
 
-A simple Python wrapper for the AliExpress Open Platform API. This module allows
-to get product information and affiliate links from AliExpress using the official
-API in an easier way.
+This module provides a high-level interface to the AliExpress Open Platform API,
+supporting affiliate marketing, dropshipping, and OAuth authentication.
+
+Example:
+    >>> from aliexpress_api import AliexpressApi, models, set_debug_mode
+    >>>
+    >>> # Enable debug logging (optional)
+    >>> set_debug_mode(True)
+    >>>
+    >>> # Initialize the API
+    >>> api = AliexpressApi(
+    ...     key="your_app_key",
+    ...     secret="your_app_secret",
+    ...     language=models.Language.EN,
+    ...     currency=models.Currency.USD,
+    ...     tracking_id="your_tracking_id"
+    ... )
+    >>>
+    >>> # Generate affiliate links
+    >>> links = api.get_affiliate_links(["https://aliexpress.com/item/123.html"])
 """
 
 from .sdk import setDefaultAppInfo
@@ -10,19 +27,31 @@ from . import models
 from .mixins.affiliate import AffiliateMixin
 from .mixins.dropshipping import DropshippingMixin
 from .mixins.common import CommonMixin
+from .mixins.oauth import OAuthMixin
 
-class AliexpressApi(CommonMixin, AffiliateMixin, DropshippingMixin):
-    """Provides methods to get information from AliExpress using your API credentials.
 
-    Args:
-        key (str): Your API key.
-        secret (str): Your API secret.
-        language (str): Language code. Defaults to EN.
-        currency (str): Currency code. Defaults to USD.
-        tracking_id (str): The tracking id for link generator. Defaults to None.
+class AliexpressApi(OAuthMixin, CommonMixin, AffiliateMixin, DropshippingMixin):
+    """Main API class providing access to all AliExpress API functionality.
+
+    This class combines functionality from multiple mixins:
+    - OAuthMixin: Token generation and refresh
+    - CommonMixin: Common API operations
+    - AffiliateMixin: Affiliate marketing operations
+    - DropshippingMixin: Dropshipping operations
+
+    Attributes:
+        _key: App key for API authentication
+        _secret: App secret for signature generation
+        _tracking_id: Tracking ID for affiliate links
+        _language: Default language for API responses
+        _currency: Default currency for prices
+        _app_signature: Optional app signature
+        _token: Optional access token for authenticated requests
+        categories: Cached categories list
     """
 
-    def __init__(self,
+    def __init__(
+        self,
         key: str,
         secret: str,
         language: models.Language = models.Language.EN,
@@ -30,7 +59,20 @@ class AliexpressApi(CommonMixin, AffiliateMixin, DropshippingMixin):
         tracking_id: str = None,
         app_signature: str = None,
         token: str = None,
-        **kwargs):
+        **kwargs
+    ):
+        """Initialize the AliExpress API client.
+
+        Args:
+            key: Your AliExpress app key
+            secret: Your AliExpress app secret
+            language: Default language for API responses (default: EN)
+            currency: Default currency for prices (default: USD)
+            tracking_id: Your affiliate tracking ID (required for affiliate links)
+            app_signature: Optional app signature
+            token: Optional access token for authenticated requests
+            **kwargs: Additional arguments (reserved for future use)
+        """
         self._key = key
         self._secret = secret
         self._tracking_id = tracking_id
@@ -42,60 +84,17 @@ class AliexpressApi(CommonMixin, AffiliateMixin, DropshippingMixin):
         setDefaultAppInfo(self._key, self._secret)
 
     def _prepare_request(self, request, **params):
-        """Prepares common request parameters.
-        
+        """Prepare a request with common parameters.
+
         Args:
-            request: The API request object.
-            **params: Additional parameters to set on the request.
+            request: The SDK request object
+            **params: Additional parameters to set on the request
+
+        Returns:
+            The configured request object
         """
         request.app_signature = self._app_signature
-        
-        # Set common parameters on the request object if it has them
         for key, value in params.items():
             if hasattr(request, key):
                 setattr(request, key, value)
-        
         return request
-
-    def generate_access_token(self, code: str, uuid: str = None):
-        """Generates an access token using the authorization code.
-        
-        Args:
-            code (str): The oauth code obtained from app callback.
-            uuid (str, optional): UUID.
-            
-        Returns:
-            dict: The JSON response containing access_token, refresh_token, etc.
-        """
-        import requests
-        import time
-        from .sdk.api.base import sign
-
-        url = "https://api-sg.aliexpress.com/rest/2.0/auth/token/create"
-        
-        # System parameters
-        params = {
-            "app_key": self._key,
-            "timestamp": str(int(time.time() * 1000)),
-            "sign_method": "md5",
-            "partner_id": "taobao-sdk-python-20200924",
-            "format": "json",
-            "v": "2.0",
-        }
-        
-        # Application parameters
-        app_params = {
-            "code": code,
-        }
-        if uuid:
-            app_params["uuid"] = uuid
-            
-        params.update(app_params)
-        
-        # Sign
-        params["sign"] = sign(self._secret, params)
-        
-        response = requests.post(url, data=params)
-        response.raise_for_status()
-        
-        return response.json()

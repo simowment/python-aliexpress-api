@@ -1,24 +1,23 @@
 # -*- coding: utf-8 -*-
 """
-Created on 2012-7-3
+AliExpress API SDK Base Module.
 
-@author: lihao
+This module provides the core functionality for making API requests,
+including signature generation and request handling.
 """
-
 
 import hashlib
-import http.client as httplib
-import itertools
+import hmac
 import json
-import mimetypes
 import time
-import urllib
+import requests as http_requests
 
-"""
-定义一些系统变量
-"""
+from ...logging_config import get_logger
 
-SYSTEM_GENERATE_VERSION = "taobao-sdk-python-20200924"
+logger = get_logger("sdk")
+
+# SDK Version
+SYSTEM_GENERATE_VERSION = "iop-sdk-python-20220609"
 
 P_APPKEY = "app_key"
 P_API = "method"
@@ -40,118 +39,47 @@ P_SUB_MSG = "sub_msg"
 N_REST = "/sync"
 
 
-def sign(secret, parameters):
-    # ===========================================================================
-    # '''签名方法
-    # @param secret: 签名需要的密钥
-    # @param parameters: 支持字典和string两种
-    # '''
-    # ===========================================================================
-    # 如果parameters 是字典类的话
-    if hasattr(parameters, "items"):
-        keys = parameters.keys()
-        keys = list(keys)
-        keys.sort()
+def sign(secret, api, parameters):
+    """Generate HMAC-SHA256 signature for API request.
 
-        parameters = "%s%s%s" % (
-            secret,
-            str().join("%s%s" % (key, parameters[key]) for key in keys),
-            secret,
-        )
-    parameters = parameters.encode("utf-8")
-    sign = hashlib.md5(parameters).hexdigest().upper()
-    return sign
+    Args:
+        secret: App secret key
+        api: API name/path (e.g. 'aliexpress.affiliate.link.generate')
+        parameters: Dict of request parameters (excluding 'sign')
 
+    Returns:
+        Uppercase hex string of HMAC-SHA256 signature
+    """
+    # Sort parameters alphabetically
+    sorted_keys = sorted(parameters.keys())
 
-def mixStr(pstr):
-    if isinstance(pstr, str):
-        return pstr
-    elif isinstance(pstr, str):
-        return pstr.encode("utf-8")
+    # Build signature string
+    # If API contains '/', prepend it to the parameters string
+    if "/" in api:
+        parameters_str = api + "".join("%s%s" % (key, parameters[key]) for key in sorted_keys)
     else:
-        return str(pstr)
+        parameters_str = "".join("%s%s" % (key, parameters[key]) for key in sorted_keys)
+
+    # Calculate HMAC-SHA256
+    h = hmac.new(
+        secret.encode("utf-8"),
+        parameters_str.encode("utf-8"),
+        digestmod=hashlib.sha256
+    )
+    return h.hexdigest().upper()
 
 
 class FileItem(object):
+    """Represents a file to be uploaded in a multipart request."""
+
     def __init__(self, filename=None, content=None):
         self.filename = filename
         self.content = content
 
 
-class MultiPartForm(object):
-    """Accumulate the data to be used when posting a form."""
-
-    def __init__(self):
-        self.form_fields = []
-        self.files = []
-        self.boundary = "PYTHON_SDK_BOUNDARY"
-        return
-
-    def get_content_type(self):
-        return "multipart/form-data; boundary=%s" % self.boundary
-
-    def add_field(self, name, value):
-        """Add a simple field to the form data."""
-        self.form_fields.append((name, str(value)))
-        return
-
-    def add_file(self, fieldname, filename, fileHandle, mimetype=None):
-        """Add a file to be uploaded."""
-        body = fileHandle.read()
-        if mimetype is None:
-            mimetype = mimetypes.guess_type(filename)[0] or "application/octet-stream"
-        self.files.append(
-            (mixStr(fieldname), mixStr(filename), mixStr(mimetype), mixStr(body))
-        )
-        return
-
-    def __str__(self):
-        """Return a string representing the form data, including attached files."""
-        # Build a list of lists, each containing "lines" of the
-        # request.  Each part is separated by a boundary string.
-        # Once the list is built, return a string where each
-        # line is separated by '\r\n'.
-        parts = []
-        part_boundary = "--" + self.boundary
-
-        # Add the form fields
-        parts.extend(
-            [
-                part_boundary,
-                'Content-Disposition: form-data; name="%s"' % name,
-                "Content-Type: text/plain; charset=UTF-8",
-                "",
-                value,
-            ]
-            for name, value in self.form_fields
-        )
-
-        # Add the files to upload
-        parts.extend(
-            [
-                part_boundary,
-                'Content-Disposition: file; name="%s"; filename="%s"'
-                % (field_name, filename),
-                "Content-Type: %s" % content_type,
-                "Content-Transfer-Encoding: binary",
-                "",
-                body,
-            ]
-            for field_name, filename, content_type, body in self.files
-        )
-
-        # Flatten the list and add closing boundary marker,
-        # then return CR+LF separated data
-        flattened = list(itertools.chain(*parts))
-        flattened.append("--" + self.boundary + "--")
-        flattened.append("")
-        return "\r\n".join(flattened)
-
-
 class TopException(Exception):
-    # ===========================================================================
-    # 业务异常类
-    # ===========================================================================
+    """API business logic exception."""
+
     def __init__(self):
         self.errorcode = None
         self.message = None
@@ -160,42 +88,33 @@ class TopException(Exception):
         self.application_host = None
         self.service_host = None
 
-    def __str__(self, *args, **kwargs):
-        sb = (
-            "errorcode="
-            + mixStr(self.errorcode)
-            + " message="
-            + mixStr(self.message)
-            + " subcode="
-            + mixStr(self.subcode)
-            + " submsg="
-            + mixStr(self.submsg)
-            + " application_host="
-            + mixStr(self.application_host)
-            + " service_host="
-            + mixStr(self.service_host)
-        )
-        return sb
+    def __str__(self):
+        parts = [
+            f"errorcode={self.errorcode}",
+            f"message={self.message}",
+            f"subcode={self.subcode}",
+            f"submsg={self.submsg}",
+            f"application_host={self.application_host}",
+            f"service_host={self.service_host}",
+        ]
+        return " ".join(parts)
 
 
 class RequestException(Exception):
-    # ===========================================================================
-    # 请求连接异常类
-    # ===========================================================================
+    """HTTP request exception."""
     pass
 
 
 class RestApi(object):
-    # ===========================================================================
-    # Rest api的基类
-    # ===========================================================================
+    """Base class for all REST API requests."""
 
-    def __init__(self, domain="api-sg.aliexpress.com", port=80):
-        # =======================================================================
-        # 初始化基类
-        # Args @param domain: 请求的域名或者ip
-        #      @param port: 请求的端口
-        # =======================================================================
+    def __init__(self, domain="api-sg.aliexpress.com", port=443):
+        """Initialize the REST API base class.
+
+        Args:
+            domain: API domain (default: api-sg.aliexpress.com)
+            port: Port number (default: 443 for HTTPS)
+        """
         self.__domain = domain
         self.__port = port
         self.__httpmethod = "POST"
@@ -205,114 +124,131 @@ class RestApi(object):
             self.__app_key = getDefaultAppInfo().appkey
             self.__secret = getDefaultAppInfo().secret
 
-    def get_request_header(self):
-        return {
-            "Content-type": "application/x-www-form-urlencoded;charset=UTF-8",
-            "Cache-Control": "no-cache",
-            "Connection": "Keep-Alive",
-        }
-
     def set_app_info(self, appinfo):
-        # =======================================================================
-        # 设置请求的app信息
-        # @param appinfo: import top
-        #                 appinfo aliexpress.top.appinfo(appkey,secret)
-        # =======================================================================
+        """Set the app credentials."""
         self.__app_key = appinfo.appkey
         self.__secret = appinfo.secret
 
     def getapiname(self):
+        """Return the API name. Override in subclasses."""
         return ""
 
     def getMultipartParas(self):
+        """Return list of multipart parameters. Override in subclasses."""
         return []
 
     def getTranslateParas(self):
+        """Return parameter translation dict. Override in subclasses."""
         return {}
 
     def _check_requst(self):
+        """Validate request. Override in subclasses."""
         pass
 
     def getResponse(self, authrize=None, timeout=30):
-        # =======================================================================
-        # 获取response结果
-        # =======================================================================
-        if self.__port == 443:
-            connection = httplib.HTTPSConnection(
-                self.__domain, self.__port, timeout=timeout
-            )
-        else:
-            connection = httplib.HTTPConnection(
-                self.__domain, self.__port, timeout=timeout
-            )
-        timestamp_temp = "%.2f" % (float(time.time()))
-        timestamp_temp = str(int(float(timestamp_temp) * 1000))
+        """Execute the API request and return the response.
 
+        Args:
+            authrize: Optional access token for authenticated requests
+            timeout: Request timeout in seconds (default: 30)
+
+        Returns:
+            dict: Parsed JSON response
+
+        Raises:
+            RequestException: If the HTTP request fails
+            TopException: If the API returns an error response
+        """
+        # Build base URL
+        protocol = "https" if self.__port == 443 else "http"
+        base_url = f"{protocol}://{self.__domain}{N_REST}"
+
+        # Build timestamp
+        timestamp = str(int(time.time() * 1000))
+
+        # System parameters
         sys_parameters = {
             P_FORMAT: "json",
             P_APPKEY: self.__app_key,
-            P_SIGN_METHOD: "md5",
-            P_VERSION: "2.0",
-            P_TIMESTAMP: timestamp_temp,
+            P_SIGN_METHOD: "sha256",
+            P_TIMESTAMP: timestamp,
             P_PARTNER_ID: SYSTEM_GENERATE_VERSION,
             P_API: self.getapiname(),
         }
+
         if authrize is not None:
             sys_parameters[P_ACCESS_TOKEN] = authrize
+
+        # Application parameters
         application_parameter = self.getApplicationParameters()
+
+        # Generate signature
         sign_parameter = sys_parameters.copy()
         sign_parameter.update(application_parameter)
-        sys_parameters[P_SIGN] = sign(self.__secret, sign_parameter)
-        connection.connect()
+        sys_parameters[P_SIGN] = sign(self.__secret, self.getapiname(), sign_parameter)
 
-        header = self.get_request_header()
+        # Build request
         if self.getMultipartParas():
-            form = MultiPartForm()
-            for key, value in application_parameter.items():
-                form.add_field(key, value)
+            # Multipart form data for file uploads
+            files = {}
             for key in self.getMultipartParas():
-                fileitem = getattr(self, key)
+                fileitem = getattr(self, key, None)
                 if fileitem and isinstance(fileitem, FileItem):
-                    form.add_file(key, fileitem.filename, fileitem.content)
-            body = str(form)
-            header["Content-type"] = form.get_content_type()
-        else:
-            body = urllib.parse.urlencode(application_parameter)
+                    files[key] = (fileitem.filename, fileitem.content)
 
-        url = N_REST + "?" + urllib.parse.urlencode(sys_parameters)
-        connection.request(self.__httpmethod, url, body=body, headers=header)
-        response = connection.getresponse()
-        if response.status != 200:
-            raise RequestException(
-                "invalid http status "
-                + str(response.status)
-                + ",detail body:"
-                + response.read()
+            logger.debug(f"API {self.getapiname()} - Multipart request with files: {list(files.keys())}")
+            response = http_requests.post(
+                base_url,
+                params=sys_parameters,
+                data=application_parameter,
+                files=files,
+                timeout=timeout
             )
-        result = response.read()
-        jsonobj = json.loads(result)
+        else:
+            # Standard form data
+            logger.debug(f"API {self.getapiname()} - Request params: {sys_parameters}")
+            logger.debug(f"API {self.getapiname()} - Application params: {application_parameter}")
+            response = http_requests.post(
+                base_url,
+                params=sys_parameters,
+                data=application_parameter,
+                timeout=timeout
+            )
+
+        # Check HTTP status
+        if response.status_code != 200:
+            raise RequestException(
+                f"HTTP {response.status_code}: {response.text}"
+            )
+
+        # Log raw response
+        logger.debug(f"API {self.getapiname()} - Raw response: {response.text}")
+
+        # Parse JSON
+        jsonobj = response.json()
+
+        # Check for API errors
         if "error_response" in jsonobj:
             error = TopException()
-            if P_CODE in jsonobj["error_response"]:
-                error.errorcode = jsonobj["error_response"][P_CODE]
-            if P_MSG in jsonobj["error_response"]:
-                error.message = jsonobj["error_response"][P_MSG]
-            if P_SUB_CODE in jsonobj["error_response"]:
-                error.subcode = jsonobj["error_response"][P_SUB_CODE]
-            if P_SUB_MSG in jsonobj["error_response"]:
-                error.submsg = jsonobj["error_response"][P_SUB_MSG]
-            error.application_host = response.getheader("Application-Host", "")
-            error.service_host = response.getheader("Location-Host", "")
+            err = jsonobj["error_response"]
+            error.errorcode = err.get(P_CODE)
+            error.message = err.get(P_MSG)
+            error.subcode = err.get(P_SUB_CODE)
+            error.submsg = err.get(P_SUB_MSG)
+            error.application_host = response.headers.get("Application-Host", "")
+            error.service_host = response.headers.get("Location-Host", "")
             raise error
+
         return jsonobj
 
     def getApplicationParameters(self):
+        """Extract application parameters from the request object."""
         application_parameter = {}
         for key in self.__dict__:
             value = self.__dict__[key]
             if (
                 not key.startswith("__")
-                and not key in self.getMultipartParas()
+                and key not in self.getMultipartParas()
                 and not key.startswith("_RestApi__")
                 and value is not None
             ):
@@ -320,14 +256,13 @@ class RestApi(object):
                     application_parameter[key[1:]] = value
                 else:
                     application_parameter[key] = value
-        # 查询翻译字典来规避一些关键字属性
+
+        # Translate parameter names if needed
         translate_parameter = self.getTranslateParas()
         for key in list(application_parameter.keys()):
-            value = application_parameter[key]
             if key in translate_parameter:
-                application_parameter[translate_parameter[key]] = application_parameter[
-                    key
-                ]
+                application_parameter[translate_parameter[key]] = application_parameter[key]
                 del application_parameter[key]
-        print(f"DEBUG: API {self.getapiname()} final application parameters: {application_parameter}")
+
+        logger.debug(f"API {self.getapiname()} - Final params: {application_parameter}")
         return application_parameter

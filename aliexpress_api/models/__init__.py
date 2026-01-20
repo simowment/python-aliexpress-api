@@ -7,6 +7,7 @@ from .product import Product, ProductsResponse
 from .category import Category, ChildCategory
 from .order import Order
 from .orderlist import OrderListResponse
+from .oauth import TokenResponse
 from .dropshipping import (
     DsSearchProduct,
     DsCategory,
